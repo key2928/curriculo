@@ -1,0 +1,2768 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>KONEX CREATIVE — Gerador de Currículo Oficial</title>
+
+<script>
+  const allowedDomains=['iubsites.com','www.iubsites.com','localhost','127.0.0.1'];
+  if(!allowedDomains.includes(window.location.hostname)){
+    document.write('<div style="height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0b0f1a;color:#ef4444;font-family:sans-serif;text-align:center;padding:20px;"><h1>🚫 SISTEMA BLOQUEADO 🚫</h1><p>Este software é propriedade exclusiva da Konex Creative.</p></div>');
+    window.stop(); throw new Error("Domínio não autorizado.");
+  }
+</script>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Lato:wght@300;400;700&family=Merriweather:wght@300;700&family=Montserrat:ital,wght@0,300;0,400;0,600;0,800;0,900;1,900&family=Oswald:wght@400;700&family=Playfair+Display:wght@400;700;900&family=Poppins:wght@200;300;500;700&family=Raleway:wght@300;600;900&family=Roboto+Mono:wght@400;700&family=Quicksand:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+<script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
+<style>
+/* ═══════════════════════════════════════════════════════════
+   KONEX CREATIVE — DESIGN SYSTEM LIGHT
+═══════════════════════════════════════════════════════════ */
+:root {
+  --ui-bg: #e2e8f0; --ui-panel: #ffffff; --ui-card: #f1f5f9; --ui-border: #94a3b8; --ui-border-light: #cbd5e1;
+  --ui-input-bg: #ffffff; --ui-txt: #0f172a; --ui-muted: #475569; --ui-canvas: #cbd5e1;
+  --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.05); --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+  --brand: #4f46e5; --brand-grd: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  --success: #10b981; --danger: #ef4444; --warn: #f59e0b;
+  --title-scale: 1; --text-scale: 1; --user-scale: 1;
+  --user-font: 'Inter', sans-serif; --user-color: #2563eb; --secondary: #f1f5f9; --user-font-color: #1e293b; --sidebar-text-color: #ffffff;
+  --cv-margin: 40px; --cv-spacing: 15px;
+}
+body::before{
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:-1;
+  background: radial-gradient(900px 520px at 10% 10%, rgba(79,70,229,.10), transparent 60%), radial-gradient(900px 520px at 90% 15%, rgba(245,158,11,.08), transparent 60%);
+  filter:saturate(1.05);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--ui-bg); color: var(--ui-txt); font-family: 'Inter', sans-serif; min-height: 100vh; overflow: hidden; margin: 0; }
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--ui-bg); }
+::-webkit-scrollbar-thumb { background: var(--ui-border); border-radius: 3px; }
+
+#app-container { display: flex; height: 100vh; width: 100vw; flex-direction: column; overflow: hidden; }
+.main-wrapper { display: flex; flex: 1; overflow: hidden; }
+
+/* ── LAYOUT RESPONSIVO (MOBILE) ── */
+@media (max-width: 1023px) {
+  body { overflow: auto; }
+  #app-container { height: auto; min-height: 100vh; overflow: visible; }
+  .main-wrapper { flex-direction: column; overflow: visible; }
+  .sidebar { width: 100% !important; min-width: 100% !important; max-width: 100% !important; height: auto !important; flex: none; border-right: none; border-bottom: 2px solid var(--ui-border); }
+  .resizer { display: none !important; }
+  .preview-area { height: 85vh !important; flex: none; display: flex; flex-direction: column; overflow: hidden; }
+  .sidebar-content { overflow-y: visible; padding-bottom: 30px; }
+}
+
+@media (max-width: 600px) {
+  .store-header { flex-direction: column; gap: 10px; text-align: center; }
+  .store-tabs { flex-wrap: wrap; }
+  .plan-card { flex-direction: column; text-align: center; gap: 10px; }
+  .plan-price { text-align: center; width: 100%; }
+  #layoutVisualGrid { grid-template-columns: repeat(2, 1fr) !important; gap: 6px !important; }
+  .layout-thumb { border-radius: 8px !important; }
+  .theme-grid { grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)) !important; gap: 6px !important; }
+  .theme-btn { padding: 8px 4px !important; }
+  .theme-name { font-size: 9px !important; }
+  .theme-dot { width: 12px !important; height: 12px !important; }
+}
+
+.no-copy, .no-copy * {
+  -webkit-user-select: none !important; -moz-user-select: none !important; -ms-user-select: none !important; user-select: none !important;
+  -webkit-user-drag: none !important; -webkit-touch-callout: none !important;
+}
+.preview-toolbar, .preview-toolbar *, .qr-drag { pointer-events: auto !important; }
+.preview-canvas { pointer-events: auto; }
+
+/* ── PROTEÇÃO ANTI-SCREENSHOT ── */
+.kc-screenshot-guard {
+  position: absolute; inset: 0; z-index: 9990; pointer-events: none;
+  background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0) 0px, rgba(255,255,255,0) 3px, rgba(100,100,200,0.008) 3px, rgba(100,100,200,0.008) 4px), repeating-linear-gradient(-45deg, rgba(255,255,255,0) 0px, rgba(255,255,255,0) 3px, rgba(200,100,100,0.006) 3px, rgba(200,100,100,0.006) 4px);
+}
+#kcPrintGuard { display: none; position: fixed; inset: 0; z-index: 9999999; background: rgba(10, 10, 30, 0.97); align-items: center; justify-content: center; flex-direction: column; text-align: center; font-family: 'Inter', sans-serif; color: #fff; user-select: none; pointer-events: all; }
+#kcPrintGuard .kpg-icon { font-size: 72px; margin-bottom: 16px; animation: kcShake 0.4s; }
+#kcPrintGuard .kpg-title { font-size: 28px; font-weight: 900; color: #ef4444; margin-bottom: 12px; }
+#kcPrintGuard .kpg-msg { font-size: 16px; color: #94a3b8; max-width: 400px; line-height: 1.6; }
+@keyframes kcShake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-10px)} 75%{transform:translateX(10px)} }
+.preview-canvas img, #canvasScroll img { -webkit-user-drag: none !important; pointer-events: none !important; }
+@media print { html, body { display: none !important; visibility: hidden !important; } * { display: none !important; } }
+
+/* ── SIDEBAR & RESIZER ── */
+.sidebar { width: 500px; min-width: 350px; max-width: 800px; height: 100%; display: flex; flex-direction: column; background: var(--ui-bg); z-index: 10; border-right: 1px solid var(--ui-border); box-shadow: 4px 0 15px rgba(0,0,0,0.05);}
+.resizer { width: 6px; background: var(--ui-border); cursor: col-resize; z-index: 20; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+.resizer:hover, .resizer.active { background: var(--brand); }
+.resizer::after { content: '⋮'; color: var(--ui-panel); font-size: 14px; pointer-events: none;}
+.preview-area { flex: 1; height: 100%; display: flex; flex-direction: column; background: var(--ui-canvas); position: relative; min-width: 300px; overflow: hidden; }
+
+/* ── LOGOMARCA CHAMATIVA ── */
+.sidebar-header { background: var(--ui-panel); border-bottom: 1px solid var(--ui-border); padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; box-shadow: var(--shadow-sm); z-index: 2;}
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-logo { 
+  width: 44px; height: 44px; 
+  background: linear-gradient(135deg, #4f46e5 0%, #ec4899 100%); 
+  border-radius: 12px; display: flex; align-items: center; justify-content: center; 
+  font-weight: 900; font-size: 22px; color: #fff; 
+  box-shadow: 0 4px 15px rgba(79,70,229,.3); 
+  font-family: 'Montserrat', sans-serif; font-style: italic; letter-spacing: -1px;
+}
+.brand-name { 
+  font-size: 20px; font-weight: 900; letter-spacing: 0.5px; 
+  background: linear-gradient(90deg, #1e293b 0%, #4f46e5 100%); 
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
+  font-family: 'Montserrat', sans-serif; line-height: 1.1;
+}
+
+.sidebar-content { flex: 1; overflow-y: auto; padding: 25px 20px 80px; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; }
+.credit-badge-top { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: #059669; font-size: 12px; font-weight: 900; padding: 6px 14px; border-radius: 20px; letter-spacing: 0.5px; cursor: pointer; transition: .2s;}
+.credit-badge-top:hover { background: rgba(16, 185, 129, 0.2); }
+
+.top-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+.btn-top-action { padding: 12px; border-radius: 10px; font-size: 12px; font-weight: 900; cursor: pointer; transition: .2s; border: none; color: #fff; text-transform: uppercase; box-shadow: var(--shadow-sm);}
+.btn-store { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+.btn-store:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.btn-video { background: var(--ui-panel); color: var(--ui-txt); border: 1px solid var(--ui-border); }
+.btn-video:hover { background: #f8fafc; transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+/* WIZARD NAVIGATION BASE */
+.wizard-nav { display: flex; gap: 8px; margin-bottom: 25px; background: var(--ui-panel); border: 1px solid var(--ui-border); padding: 6px; border-radius: 12px; overflow-x: auto; scrollbar-width: none; box-shadow: var(--shadow-sm);}
+.w-step { flex: 1; min-width: 60px; text-align: center; padding: 12px 5px; font-size: 11px; font-weight: 800; border-radius: 8px; cursor: pointer; color: var(--ui-muted); transition: 0.2s; text-transform: uppercase;}
+.w-step.active { background: var(--brand-grd); color: #fff; box-shadow: 0 4px 10px rgba(79,70,229,.3); }
+
+.step-pane { display: none; background: var(--ui-panel); padding: 25px; border-radius: 12px; border: 1px solid var(--ui-border-light); margin-bottom: 20px; box-shadow: var(--shadow-md);}
+.step-pane.active { display: block; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+.step-pane-title { font-size: 18px; font-weight: 900; color: var(--ui-txt); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid var(--ui-bg);}
+
+.wizard-footer { display: flex; justify-content: space-between; gap: 15px;}
+.btn-nav { padding: 14px 20px; background: var(--ui-panel); border: 1px solid var(--ui-border); color: var(--ui-txt); font-weight: 900; font-size: 12px; border-radius: 10px; cursor: pointer; text-transform: uppercase; transition: 0.2s; flex: 1; box-shadow: var(--shadow-sm);}
+.btn-nav:hover { background: var(--ui-bg); box-shadow: var(--shadow-md);}
+.btn-nav-primary { background: var(--brand-grd); border-color: transparent; color: #fff;}
+.btn-nav-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(79,70,229,.4); background: var(--brand);}
+.btn-clear-bottom { width: 100%; padding: 12px; background: #fff; border: 1px solid var(--ui-border); color: var(--ui-txt); border-radius: 10px; font-size: 12px; font-weight: 800; cursor: pointer; transition: .2s; margin-top: 30px; box-shadow: var(--shadow-sm); display: flex; align-items: center; justify-content: center; gap: 8px;}
+
+/* Forms & UI */
+label { display: block; font-size: 12px; font-weight: 900; color: var(--ui-muted); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 8px; margin-top: 20px; }
+label.no-top { margin-top: 0; }
+input, select, textarea { width: 100%; background: var(--ui-input-bg); border: 1px solid var(--ui-border); color: var(--ui-txt); padding: 14px 16px; border-radius: 10px; font-size: 14px; font-family: 'Inter', sans-serif; outline: none; margin-bottom: 5px; box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);}
+input:focus, textarea:focus, select:focus { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(79,70,229,.15); }
+textarea { min-height: 100px; resize: vertical; line-height: 1.5; }
+input[type="range"] { padding: 0; height: 6px; background: var(--ui-border); border: none; border-radius: 5px; appearance: none; cursor: pointer; margin-top: 10px; box-shadow: none;}
+input[type="range"]::-webkit-slider-thumb { appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--brand); cursor: pointer; }
+
+::-webkit-input-placeholder { color: #94a3b8 !important; opacity: 0.8 !important; font-style: italic; font-weight: 400; }
+:-moz-placeholder { color: #94a3b8 !important; opacity: 0.8 !important; font-style: italic; font-weight: 400; }
+
+.btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+.btn { padding: 12px 14px; border-radius: 10px; font-size: 12px; font-weight: 800; cursor: pointer; border: 1px solid var(--ui-border); background: var(--ui-card); color: var(--ui-txt); text-align: center; text-transform: uppercase; box-shadow: var(--shadow-sm);}
+.btn.active { background: var(--brand-grd); color: #fff; border-color: transparent; }
+.btn-magic { width: 100%; padding: 14px; border-radius: 12px; border: none; background: var(--brand-grd); color: #fff; font-weight: 900; font-size: 13px; cursor: pointer; text-transform: uppercase;}
+.btn-ai-apply { background: #10b981; color: #fff; border: none; border-radius: 10px; padding: 14px; font-weight: 900; font-size: 13px; cursor: pointer; width: 100%; margin-top: 12px; text-transform: uppercase; box-shadow: 0 4px 15px rgba(16,185,129,0.3); }
+.btn-red { background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.3); color: #ef4444; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 800; padding: 10px 12px; width: 100%; margin-top: 8px; box-shadow: var(--shadow-sm);}
+
+.qr-box { background: var(--ui-card); border: 1px solid var(--ui-border); padding: 15px; border-radius: 12px; margin-top: 20px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.03);}
+.qr-drag { position: absolute; z-index: 99; cursor: move; }
+
+.exp-item, .edu-item { background: var(--ui-card); border: 1px solid var(--ui-border); border-radius: 12px; padding: 20px; margin-bottom: 15px; box-shadow: var(--shadow-sm);}
+.exp-item { border-left: 4px solid var(--brand); }
+.edu-item { border-left: 4px solid var(--success); }
+
+/* ASSISTENTE IA E OVERLAY DE ESPERA */
+.ai-box { background: linear-gradient(135deg, rgba(79,70,229,0.05), rgba(124,58,237,0.05)); border: 2px solid rgba(79,70,229,0.3); border-radius: 12px; padding: 20px; margin-bottom: 25px;}
+.ai-title { font-weight: 900; font-size: 14px; color: var(--brand); margin-bottom: 15px; text-transform: uppercase; }
+
+@keyframes aiPulse { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
+@keyframes spin { 100% { transform: rotate(360deg); } }
+.ai-loading-overlay {
+  position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); z-index: 9999999;
+  display: none; align-items: center; justify-content: center; flex-direction: column;
+  text-align: center; backdrop-filter: blur(5px);
+}
+
+/* TEMAS */
+.theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(86px, 1fr)); gap: 10px; margin-bottom: 14px; }
+.theme-btn { background: var(--ui-input-bg); border: 1px solid var(--ui-border); padding: 12px 5px; border-radius: 10px; text-align: center; cursor: pointer; transition: .2s; display: flex; flex-direction: column; align-items: center; gap: 8px; box-shadow: var(--shadow-sm);}
+.theme-btn:hover { border-color: var(--brand); transform: translateY(-2px); box-shadow: var(--shadow-md); background: #fff;}
+.theme-name { font-size: 11px; font-weight: 900; color: var(--ui-txt); text-transform: uppercase; line-height: 1.2; }
+.theme-dots { display: flex; gap: 4px; }
+.theme-dot { width: 16px; height: 16px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.15); }
+
+/* PALETA */
+.color-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;}
+.color-item input[type="color"] { padding: 2px; height: 45px; cursor: pointer; border-radius: 8px; width: 100%; margin-top:5px; border: 1px solid var(--ui-border); box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);}
+
+/* MODALS & LOJA */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.6); backdrop-filter: blur(4px); z-index: 9999; display: none; align-items: center; justify-content: center; padding: 20px; }
+.modal-overlay.open { display: flex; }
+.modal-content { background: var(--ui-panel); border: 1px solid var(--ui-border); border-radius: 20px; padding: 30px; width: min(600px, 100%); max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 60px rgba(0,0,0,.2);}
+.modal-title { font-weight: 900; font-size: 18px; margin-bottom: 15px; color: var(--ui-txt); display: flex; justify-content: space-between; align-items: center;}
+
+.store-modal .modal-content { padding: 0; overflow: hidden; }
+.store-header { background: var(--ui-bg); padding: 25px; border-bottom: 1px solid var(--ui-border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;}
+.store-title { font-weight: 900; font-size: 20px; color: var(--ui-txt); }
+.store-tabs { display: flex; background: var(--ui-panel); border-bottom: 1px solid var(--ui-border); flex-wrap: wrap; }
+.s-tab { flex: 1; padding: 18px; text-align: center; font-size: 12px; font-weight: 900; color: var(--ui-muted); cursor: pointer; text-transform: uppercase; border-bottom: 3px solid transparent; }
+.s-tab.active { color: var(--brand); border-bottom-color: var(--brand); background: rgba(79,70,229,.05); }
+.store-body { padding: 30px; max-height: 70vh; overflow-y: auto;}
+
+.plan-card { background: var(--ui-card); border: 1px solid var(--ui-border); border-radius: 12px; padding: 20px; cursor: pointer; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; color: var(--ui-txt); box-shadow: var(--shadow-sm); flex-wrap: wrap; gap: 15px;}
+.plan-card.featured { border-color: #f59e0b; background: linear-gradient(135deg, rgba(245,158,11,0.05), rgba(245,158,11,0.01)); box-shadow: 0 4px 15px rgba(245,158,11,.15); }
+.plan-info { flex: 1; text-align: left; }
+.plan-name { font-weight: 900; font-size: 18px; margin-bottom: 6px; }
+.plan-desc { font-size: 13px; color: var(--ui-muted); font-weight: 500;}
+.plan-badge { padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 900; letter-spacing: 0.5px; margin-left: 10px; background: rgba(16,185,129,.15); color: #059669; }
+.plan-price { font-size: 26px; font-weight: 900; text-align: right; }
+
+.credit-box-large { background: linear-gradient(135deg, rgba(79,70,229,.1), rgba(124,58,237,.05)); border: 2px solid rgba(79,70,229,.2); padding: 30px; border-radius: 16px; text-align: center; margin-bottom: 25px; position: relative; overflow: hidden;}
+.credit-num-large { font-size: 85px; font-weight: 900; color: var(--brand); line-height: 1; margin: 15px 0; text-shadow: 0 0 40px rgba(79,70,229,.4);}
+
+/* PREVIEW AREA */
+.preview-toolbar { background: #fff; border-bottom: 1px solid var(--ui-border); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; z-index: 50; position: sticky; top: 0; box-shadow: var(--shadow-sm); flex-wrap: wrap; gap: 10px;}
+.preview-label { font-size: 12px; font-weight: 900; color: var(--ui-muted); text-transform: uppercase; letter-spacing: 1px;}
+.preview-btn { padding: 10px 16px; border-radius: 8px; font-size: 12px; font-weight: 900; cursor: pointer; border: 1px solid var(--ui-border); background: var(--ui-card); color: var(--ui-txt); box-shadow: var(--shadow-sm);}
+.btn-download { background: linear-gradient(135deg, var(--brand) 0%, #7c3aed 100%); color: #fff; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 900; font-size: 13px; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 15px rgba(79,70,229,.4);}
+.preview-canvas { flex: 1; padding: 40px 20px; display: flex; justify-content: center; align-items: flex-start; overflow-y: auto; overflow-x: hidden; position: relative; background: #cbd5e1; }
+
+/* QUEBRA DE PÁGINA */
+.kc-cut-line{ position:absolute; left:0; right:0; height:0; border-top:2px dashed rgba(239,68,68,.9); z-index:95; }
+.kc-cut-drag-zone{ position:absolute; left:0; right:0; top:-20px; height:40px; cursor:ns-resize; z-index:96; display:flex; align-items:center; justify-content:center; }
+.kc-cut-line .kc-cut-handle{ position:absolute; right:14px; top:-15px; background:linear-gradient(135deg,rgba(239,68,68,.18),rgba(185,28,28,.22)); border:1.5px solid rgba(239,68,68,.55); color:#b91c1c; padding:7px 13px; border-radius:10px; font-size:11px; font-weight:900; pointer-events:none; }
+.kc-cut-line.locked{display:none !important;} 
+.kc-cut-blank{ position:absolute; left:0; right:0; bottom:0; background:#fff; z-index:93; pointer-events:none; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.kc-cut-blank-label{ background:rgba(15,23,42,.75); color:rgba(255,255,255,.55); padding:5px 14px; border-radius:8px; font-size:11px; font-weight:700; }
+#paperZoomWrap { transform-origin: top center; transition: transform 0.1s; position: relative; display: inline-block; text-align: left; margin: 0 auto; }
+
+/* A4 PAPER CLASSES */
+.cv-content { display: block; width: 100%; height: max-content; min-height: 1123px; font-size: calc(11px * var(--user-scale)); line-height: 1.5; font-family: var(--user-font); padding: var(--cv-margin); box-sizing: border-box !important; word-wrap: break-word !important; overflow-wrap: break-word !important; word-break: break-word !important;}
+.cv-content * { box-sizing: border-box !important; max-width: 100%; }
+
+.pos-right.layout-classic .header, .pos-right.layout-geo .header-bg, .pos-right.layout-boxed .header, .pos-right.layout-minimal .header { flex-direction: row-reverse !important; text-align: right !important; }
+.pos-right.layout-artistic .header-art { flex-direction: row-reverse !important; text-align: right !important; }
+.palette-custom { --prim: var(--user-color); --sec: var(--secondary); --txt-h: var(--user-color); --txt-main: var(--user-font-color); }
+.cv-name { font-size:calc(2.2em * var(--title-scale)); font-weight:900; line-height:1.1; margin-bottom:.2em; text-transform:uppercase; color:var(--txt-h); }
+.cv-role { font-size:calc(1.3em * var(--title-scale)); font-weight:600; color:var(--prim); margin-bottom:.8em; text-transform:uppercase; letter-spacing:1px; }
+.cv-contact { font-size:calc(0.9em * var(--text-scale)); margin-bottom:.5em; color:var(--txt-main); }
+.item-box { margin-bottom: var(--cv-spacing); }
+.item-title { font-weight:700; font-size:calc(1.1em * var(--title-scale)); color:var(--txt-main); }
+.item-sub { font-size:calc(0.9em * var(--text-scale)); font-style:italic; color:var(--txt-main); opacity:.8; margin-top:.2em; }
+.item-meta { font-size:calc(0.85em * var(--text-scale)); color:var(--txt-main); opacity:.75; margin-top:.2em; }
+.item-desc { margin-top:.3em; font-size:calc(1em * var(--text-scale)); white-space:pre-wrap; text-align:justify; color:var(--txt-main); }
+[class*="var-"] .section-title { font-size:calc(1.2em * var(--title-scale)); font-weight:800; text-transform:uppercase; color:var(--prim); margin-top: calc(var(--cv-spacing) * 1.5); margin-bottom: calc(var(--cv-spacing) * 0.8); }
+
+/* ESTILOS DE TITULO SEGUROS */
+.var-1 .section-title { border-bottom: 2px solid var(--prim); padding-bottom: 5px; }
+.var-2 .section-title { background: var(--prim); color: #fff; padding: 5px 10px; border-radius: 5px; display: inline-block; }
+.var-3 .section-title { text-align: center; }
+.var-4 .section-title { border-left: 4px solid var(--prim); padding-left: 10px; }
+.var-5 .section-title { border-top: 1px solid var(--prim); border-bottom: 1px solid var(--prim); padding: 5px 0; text-align: center;}
+.var-6 .section-title { font-style: italic; border-bottom: 1px dashed var(--prim); }
+.var-7 .section-title { text-decoration: underline; text-decoration-color: var(--prim); text-decoration-thickness: 3px; }
+.var-8 .section-title { background: linear-gradient(90deg, var(--prim), transparent); color: #fff; padding: 5px 10px; display: inline-block;}
+.var-9 .section-title { letter-spacing: 3px; border-bottom: 1px solid rgba(0,0,0,0.1); }
+
+/* LAYOUTS CORE SEGUROS */
+.layout-classic { padding: var(--cv-margin); }
+.layout-side-left, .layout-side-right { display: flex; flex-direction: row; width: 100%; min-height: 1123px; padding: 0 !important; }
+.layout-side-left .sidebar-area { width: 32%; flex-shrink: 0; background: var(--prim); color: var(--sidebar-text-color); padding: var(--cv-margin); text-align: center; }
+.layout-side-left .main-area { width: 68%; flex: 1; padding: var(--cv-margin); color: var(--txt-main); min-width: 0;}
+.layout-side-right .sidebar-area { width: 32%; flex-shrink: 0; background: var(--sec); padding: var(--cv-margin); border-left: 2px solid var(--prim); }
+.layout-side-right .main-area { width: 68%; flex: 1; padding: var(--cv-margin); color: var(--txt-main); min-width: 0;}
+.layout-artistic { display: flex; flex-direction: row; width: 100%; min-height: 1123px; padding: 0 !important; }
+.layout-artistic .side-strip { width: 60px; flex-shrink: 0; background: var(--prim); }
+.layout-artistic .main-body { padding: var(--cv-margin); flex:1; min-width: 0;}
+.layout-artistic .header-art { padding-bottom: 20px; margin-bottom: var(--cv-spacing);}
+.layout-artistic .big-letter { font-size: 6em; line-height: 0.8; font-weight: 900; color: var(--prim); margin-right: 10px; }
+.layout-geo { padding: 0 !important; }
+.layout-geo .header-bg { background: var(--prim); height: auto; min-height: 180px; clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%); color: var(--sidebar-text-color); padding: var(--cv-margin); padding-bottom: calc(var(--cv-margin) + 20px); }
+.layout-geo .main-content { padding: 0 var(--cv-margin) var(--cv-margin) var(--cv-margin); margin-top: 10px; }
+.layout-minimal { padding: calc(var(--cv-margin) * 1.5); text-align: center; }
+.layout-boxed { padding: calc(var(--cv-margin) * 0.7); background: #fff; }
+.layout-boxed .inner-border { border: 2px solid var(--prim); padding: var(--cv-margin); height: 100%; border-radius: 8px; }
+
+/* CORES PARA SIDEBARS COLORIDAS */
+.layout-geo .header-bg .cv-name, .layout-geo .header-bg .cv-role, .layout-geo .header-bg .cv-contact,
+.layout-side-left .sidebar-area .cv-name, .layout-side-left .sidebar-area .cv-role, .layout-side-left .sidebar-area .cv-contact, 
+.layout-side-left .sidebar-area .section-title, .layout-side-left .sidebar-area .item-desc, .layout-side-left .sidebar-area .item-title, .layout-side-left .sidebar-area .item-sub,
+.layout-side-right .sidebar-area .cv-name, .layout-side-right .sidebar-area .cv-role, .layout-side-right .sidebar-area .cv-contact, 
+.layout-side-right .sidebar-area .section-title, .layout-side-right .sidebar-area .item-desc, .layout-side-right .sidebar-area .item-title, .layout-side-right .sidebar-area .item-sub { color: var(--sidebar-text-color) !important; }
+
+.layout-thumb { user-select:none; transition: border-color .2s, transform .2s, box-shadow .2s; }
+.layout-thumb:hover { border-color: var(--primary, #2563eb) !important; transform:translateY(-2px); box-shadow:0 8px 24px rgba(37,99,235,.2); }
+.layout-thumb.active { border-color: var(--primary, #2563eb) !important; box-shadow:0 0 0 3px rgba(37,99,235,.2); }
+
+/* ═══════════════════════════════════════════════════════════
+   KONEX CREATIVE — MELHORIAS DE LAYOUT v2
+═══════════════════════════════════════════════════════════ */
+
+/* ── BARRA DE ACENTO GRADIENTE NO TOPO DO SIDEBAR ── */
+.sidebar-header { position: relative; overflow: visible; }
+.sidebar-header::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--brand-grd);
+  border-radius: 0;
+  z-index: 1;
+}
+
+/* ── LOGOMARCA COM HOVER ── */
+.brand-logo {
+  transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), box-shadow 0.3s;
+}
+.brand-logo:hover {
+  transform: scale(1.08) rotate(-3deg);
+  box-shadow: 0 8px 22px rgba(79,70,229,.45);
+}
+
+/* ── WIZARD NAV MELHORADO ── */
+.wizard-nav {
+  padding: 5px;
+  gap: 3px;
+  background: linear-gradient(to bottom, var(--ui-panel), var(--ui-card));
+}
+.w-step {
+  position: relative;
+  padding: 10px 4px 9px;
+  font-size: 10px;
+  line-height: 1.4;
+  border-radius: 8px;
+  transition: 0.22s cubic-bezier(.4,0,.2,1);
+}
+.w-step:hover:not(.active) {
+  background: rgba(79,70,229,0.08);
+  color: var(--brand);
+  transform: translateY(-1px);
+}
+.w-step.active {
+  background: var(--brand-grd);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(79,70,229,.38);
+  transform: translateY(-1px);
+}
+
+/* ── STEP PANE TITLE COM BORDA ESQUERDA ── */
+.step-pane-title {
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--ui-txt);
+  margin-bottom: 22px;
+  padding: 12px 14px 12px 16px;
+  border-left: 4px solid var(--brand);
+  border-bottom: none;
+  border-radius: 0 8px 8px 0;
+  background: linear-gradient(to right, rgba(79,70,229,0.07), transparent 80%);
+}
+
+/* ── STEP PANE COM SOMBRA MAIS SUAVE ── */
+.step-pane {
+  border-radius: 14px;
+  border: 1px solid rgba(148,163,184,0.2);
+}
+
+/* ── BOTÃO DE DOWNLOAD OFICIAL ANIMADO ── */
+@keyframes kcGlowPulse {
+  0%, 100% { box-shadow: 0 4px 15px rgba(79,70,229,.4); }
+  50% { box-shadow: 0 6px 28px rgba(79,70,229,.7), 0 0 0 4px rgba(79,70,229,.12); }
+}
+.btn-download {
+  animation: kcGlowPulse 2.5s ease-in-out infinite;
+  letter-spacing: 0.3px;
+}
+.btn-download:hover {
+  animation: none;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(79,70,229,.65);
+}
+.btn-download-locked {
+  background: linear-gradient(135deg, #475569, #334155) !important;
+  animation: none !important;
+  box-shadow: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn-download { animation: none; }
+}
+
+/* ── PREVIEW TOOLBAR MELHORADO ── */
+.preview-toolbar {
+  background: linear-gradient(to bottom, #ffffff 0%, #fafbfc 100%);
+  border-bottom: 1px solid rgba(148,163,184,.45);
+}
+.preview-btn {
+  transition: all 0.2s;
+}
+.preview-btn:hover {
+  background: var(--brand);
+  color: #fff;
+  border-color: var(--brand);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(79,70,229,.3);
+}
+.preview-label { letter-spacing: 1.2px; }
+
+/* ── PREVIEW BOTÃO PRÉVIA ── */
+.preview-toolbar .preview-btn:first-of-type {
+  border-color: var(--ui-border);
+}
+
+/* ── ITENS DE EXPERIÊNCIA E EDUCAÇÃO ── */
+.exp-item {
+  background: linear-gradient(to right, rgba(79,70,229,.03), var(--ui-card));
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.exp-item:hover {
+  box-shadow: 0 4px 16px rgba(79,70,229,.1);
+  transform: translateX(2px);
+}
+.edu-item {
+  background: linear-gradient(to right, rgba(16,185,129,.03), var(--ui-card));
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.edu-item:hover {
+  box-shadow: 0 4px 16px rgba(16,185,129,.1);
+  transform: translateX(2px);
+}
+
+/* ── AI BOX ── */
+.ai-box {
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(79,70,229,0.06), rgba(124,58,237,0.04));
+  border: 1px solid rgba(79,70,229,0.22);
+}
+.ai-title { letter-spacing: 0.5px; }
+
+/* ── TEMAS ── */
+.theme-btn { transition: all 0.22s cubic-bezier(.4,0,.2,1); }
+.theme-btn:hover {
+  border-color: var(--brand);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(79,70,229,.15);
+  background: #fff;
+}
+
+/* ── BOTÕES DE AÇÃO SUPERIORES ── */
+.btn-top-action { letter-spacing: 0.5px; transition: 0.22s; }
+.btn-store:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(245,158,11,.35);
+}
+.btn-video:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,.1);
+}
+
+/* ── BADGE DE CRÉDITOS ── */
+.credit-badge-top {
+  font-size: 11px;
+  letter-spacing: 0.3px;
+  transition: 0.2s;
+}
+.credit-badge-top:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16,185,129,.25);
+}
+
+/* ── BOTÃO LIMPAR ── */
+.btn-clear-bottom {
+  transition: 0.2s;
+  color: var(--ui-muted);
+}
+.btn-clear-bottom:hover {
+  background: rgba(239,68,68,0.05);
+  border-color: rgba(239,68,68,0.35);
+  color: #ef4444;
+}
+
+/* ── FORMULÁRIO ── */
+input:focus, textarea:focus, select:focus {
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.btn-ai-apply {
+  transition: 0.2s;
+}
+.btn-ai-apply:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(16,185,129,.4);
+}
+.btn-magic:hover {
+  transform: translateY(-1px);
+  opacity: 0.92;
+}
+.btn-red {
+  transition: 0.2s;
+}
+.btn-red:hover {
+  background: rgba(239,68,68,.18);
+  border-color: rgba(239,68,68,.5);
+  transform: translateY(-1px);
+}
+
+/* ── MODAIS ── */
+.modal-content {
+  transition: transform 0.3s cubic-bezier(.34,1.56,.64,1);
+}
+
+/* ── IMPORTAÇÃO MÁGICA (BOX VERDE) ── */
+.sidebar-content > div:nth-child(2) {
+  transition: box-shadow 0.2s;
+}
+.sidebar-content > div:nth-child(2):hover {
+  box-shadow: 0 6px 20px rgba(16,185,129,.12);
+}
+
+/* ── MOBILE MELHORADO ── */
+@media (max-width: 1023px) {
+  .step-pane-title { font-size: 14px; padding: 10px 12px 10px 14px; }
+  .wizard-nav { padding: 4px; gap: 2px; }
+  .w-step { padding: 8px 3px; font-size: 9px; }
+  .preview-toolbar { padding: 10px 16px; gap: 8px; }
+  .preview-toolbar > div { flex-wrap: wrap; gap: 6px; }
+}
+@media (max-width: 600px) {
+  .top-actions { gap: 8px; }
+  .btn-top-action { font-size: 11px; padding: 10px 8px; }
+  .preview-toolbar { padding: 8px 12px; }
+  .sidebar-header { padding: 12px 16px; }
+}
+
+/* ── ROLETA SURPREENDENTE ── */
+.btn-roulette {
+  width: 100%;
+  background: linear-gradient(135deg, #f59e0b 0%, #ef4444 50%, #8b5cf6 100%);
+  border: none; color: #fff; font-weight: 900; font-size: 14px;
+  padding: 16px 20px; border-radius: 14px; cursor: pointer;
+  letter-spacing: 0.5px; text-transform: uppercase;
+  box-shadow: 0 6px 20px rgba(239,68,68,0.35);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  margin-bottom: 20px; position: relative; overflow: hidden;
+}
+.btn-roulette::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+  pointer-events: none;
+}
+.btn-roulette:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(239,68,68,0.45); }
+.btn-roulette:active { transform: translateY(0); }
+
+.roulette-modal {
+  position: fixed; inset: 0; z-index: 9100;
+  background: rgba(0,0,0,0.88);
+  display: none; align-items: center; justify-content: center;
+  backdrop-filter: blur(5px);
+}
+.roulette-modal.open { display: flex; }
+.roulette-box {
+  background: var(--ui-panel); border-radius: 28px;
+  padding: 36px 32px; width: min(580px, 96vw); max-height: 92vh;
+  overflow-y: auto; text-align: center;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+  border: 1px solid rgba(255,255,255,0.08);
+  animation: fadeIn 0.3s ease;
+}
+@keyframes spinWheel {
+  0%   { transform: rotate(0deg) scale(1); }
+  25%  { transform: rotate(90deg) scale(1.1); }
+  50%  { transform: rotate(180deg) scale(1); }
+  75%  { transform: rotate(270deg) scale(1.1); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+@keyframes popIn {
+  0%  { transform: scale(0.4); opacity: 0; }
+  70% { transform: scale(1.15); }
+  100%{ transform: scale(1); opacity: 1; }
+}
+@keyframes shimmer {
+  0%  { background-position: -200% center; }
+  100%{ background-position: 200% center; }
+}
+.roulette-wheel-icon {
+  font-size: 80px; display: inline-block; line-height: 1;
+  margin-bottom: 6px; transition: transform 0.2s;
+  filter: drop-shadow(0 6px 18px rgba(239,68,68,0.5));
+}
+.roulette-wheel-icon.is-spinning { animation: spinWheel 0.12s linear infinite; }
+.roulette-num-display {
+  font-size: 52px; font-weight: 900; color: var(--brand);
+  line-height: 1; transition: all 0.2s;
+}
+.roulette-num-display.pop { animation: popIn 0.4s ease; }
+.btn-spin-main {
+  background: linear-gradient(135deg, #f59e0b 0%, #ef4444 60%, #8b5cf6 100%);
+  background-size: 200% auto;
+  border: none; color: #fff; font-size: 18px; font-weight: 900;
+  padding: 22px 40px; border-radius: 18px; cursor: pointer;
+  width: 100%; margin-bottom: 16px;
+  letter-spacing: 1px; text-transform: uppercase;
+  box-shadow: 0 10px 30px rgba(239,68,68,0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+  animation: shimmer 3s linear infinite;
+}
+.btn-spin-main:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(239,68,68,0.5); }
+.btn-spin-main:active { transform: translateY(0); }
+.btn-spin-main:disabled { opacity: 0.65; cursor: not-allowed; transform: none; animation: none; }
+.roulette-hist-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--brand-grd); color: #fff; border-radius: 50%;
+  width: 44px; height: 44px; font-size: 13px; font-weight: 900;
+  cursor: pointer; box-shadow: 0 3px 10px rgba(79,70,229,0.3);
+  border: 2px solid rgba(255,255,255,0.25); transition: transform 0.2s;
+}
+.roulette-hist-badge:hover { transform: scale(1.15); }
+.roulette-layout-tag {
+  display: inline-block; font-size: 10px; font-weight: 800;
+  padding: 3px 10px; border-radius: 20px; text-transform: uppercase;
+  letter-spacing: 0.5px; margin-top: 6px;
+}
+.roulette-preview-stripe {
+  display: flex; gap: 5px; justify-content: center; margin: 12px 0 0;
+}
+.roulette-preview-dot {
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid rgba(0,0,0,0.1); flex-shrink: 0;
+}
+@media (max-width: 600px) {
+  .roulette-box { padding: 24px 18px; }
+  .roulette-wheel-icon { font-size: 60px; }
+  .btn-spin-main { font-size: 15px; padding: 18px 24px; }
+}
+</style>
+</head>
+<body>
+
+<div id="app-container">
+<div class="main-wrapper">
+
+<div id="exportOverlay" class="export-overlay" style="position:fixed; inset:0; background:rgba(241,245,249,.95); z-index:9999999; display:none; align-items:center; justify-content:center; flex-direction:column; text-align:center;">
+  <div style="width:60px; height:60px; border-radius:50%; border:4px solid var(--ui-border); border-top-color:var(--brand); animation:spin .8s linear infinite; margin-bottom:20px;"></div>
+  <div style="font-weight:900; font-size:20px; color:var(--ui-txt);" id="exportTitleText">Renderizando PDF...</div>
+  <div style="font-size:13px; color:var(--ui-muted); margin-top:8px;">Aguarde, gerando páginas de alta qualidade.</div>
+</div>
+
+<div id="aiLoadingOverlay" class="ai-loading-overlay">
+  <div style="font-size: 55px; margin-bottom: 15px; animation: aiPulse 1.5s infinite;">🤖</div>
+  <div style="width:50px; height:50px; border-radius:50%; border:4px solid rgba(255,255,255,0.1); border-top-color:#10b981; animation:spin .8s linear infinite; margin-bottom:20px;"></div>
+  <div style="font-weight:900; font-size:24px; color:#fff;" id="aiLoadingTitle">Processando com Inteligência Artificial...</div>
+  <div style="font-size:15px; color:#cbd5e1; margin-top:10px; max-width: 300px; line-height:1.5;" id="aiLoadingSub">Isso pode levar alguns segundos. Por favor, aguarde.</div>
+</div>
+
+<div id="errorModal" class="modal-overlay">
+  <div class="modal-content" style="max-width:500px;">
+    <div class="modal-title" style="color:var(--danger)">⚠️ Não foi possível ler o arquivo <button style="background:none;border:none;color:var(--ui-txt);font-size:22px;cursor:pointer;" onclick="closeModal('errorModal')">✕</button></div>
+    <p style="font-size:14px; color:var(--ui-muted); margin-bottom:15px; line-height:1.6;">
+      Ocorreu um erro ao extrair os textos do seu documento. Os motivos mais comuns são:<br><br>
+      • O PDF foi salvo como "imagem" (scaneado) e não contém texto.<br>
+      • O arquivo está protegido por senha.<br>
+      • A formatação do documento está corrompida.
+    </p>
+    <p style="font-size:14px; font-weight:700; color:var(--txt-main); margin-bottom:15px;">Como resolver?</p>
+    <div style="background:var(--ui-bg); padding:15px; border-radius:8px; margin-bottom:20px; font-size:13px; line-height:1.5;">
+       Você pode preencher os campos <strong>manualmente</strong> no nosso sistema (já deixamos 3 campos prontos para você no menu).<br><br>
+       Ou, se preferir, baixe nosso modelo em texto, preencha de forma simples e tente importar novamente:
+    </div>
+    <a href="data:application/rtf;base64,e1xydGYxXGFuc2lcYW5zaWNwZzEyNTJcZGVmZjBcbm91aWNvbXBhdFxkZWZsYW5nMTA0NntcZm9udHRibHtcZjBcZm5pbFxmY2hhcnNldDAgQ2FsaWJyaTt9fQp7XCpcZ2VuZXJhdG9yIFJpY2hlZDIwIDEwLjAuMTkwNDF9XHZpZXdraW5kNFx1YzEgClxwYXJkXHNhMjAwXHNsMjc2XHNsbXVsdDFcZjBcZnMyMlxsYW5nOSBOT01FIENPTVBMRVRPXHBhcgpFbWFpbDogXHBhcgpUZWxlZm9uZTogXHBhcgpccGFyClJFU1VNTyBQUk9GSVNTSU9OQUxccGFyCihFc2NyZXZhIHNldSByZXN1bW8gYXF1aSlccGFyClxwYXIKRVhQRVJJRU5DSUEgUFJPRklTU0lPTkFMXHBhcgpDYXJnbzpccGFyCkVtcHJlc2E6XHBhcgpQZXJpb2RvOlxwYXIKRGVzY3JpY2FvIGRhcyBhdGl2aWRhZGVzOlxwYXIKXHBhcgpGT1JNQUNBTyBBQ0FERU1JQ0FccGFyCkN1cnNvOlxwYXIASW5zdGl0dWljYW86XHBhcgp9" download="Modelo_Curriculo.rtf" class="btn-magic" style="text-align:center; display:block; text-decoration:none; margin-bottom:10px;">📥 Baixar Modelo em Texto (RTF)</a>
+    <button class="btn" style="width:100%;" onclick="closeModal('errorModal')">Preencher Manualmente</button>
+  </div>
+</div>
+
+<div id="imageModal" class="modal-overlay">
+  <div class="modal-content" style="max-width:520px; padding:20px;">
+    <div class="modal-title">✂️ Ajustar Foto <button style="background:none;border:none;color:var(--ui-txt);font-size:22px;cursor:pointer;" onclick="closeModal('imageModal')">✕</button></div>
+    <div style="height:320px;background:#000;overflow:hidden;border-radius:12px;"><img id="imageToCrop" style="max-width:100%;"></div>
+    <div class="btn-group">
+      <button class="btn" onclick="closeModal('imageModal')">Cancelar</button>
+      <button class="btn active" onclick="saveCrop()">✅ Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div id="videoModal" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-title">🌟 Como Funciona <button style="background:none;border:none;color:var(--ui-txt);font-size:22px;cursor:pointer;" onclick="closeModal('videoModal')">✕</button></div>
+    <div class="video-wrap" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; background: #000;">
+        <video controls poster="https://via.placeholder.com/800x450/111622/4f46e5?text=Video+Explicativo" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></video>
+    </div>
+    <button class="btn-magic" style="margin-top:20px;" onclick="closeModal('videoModal')">Entendi, quero criar o meu!</button>
+  </div>
+</div>
+
+<div id="storeModal" class="modal-overlay store-modal">
+  <div class="modal-content">
+    <div class="store-header">
+      <div class="store-title">💎 Loja Konex & Minha Conta</div>
+      <button style="background:none;border:none;color:var(--ui-txt);font-size:22px;cursor:pointer;" onclick="closeModal('storeModal')">✕</button>
+    </div>
+    <div class="store-tabs">
+      <div class="s-tab active" id="tabAuth" onclick="switchStoreTab('auth')">👤 Acesso / Conta</div>
+      <div class="s-tab" id="tabPlans" onclick="switchStoreTab('plans')">🛍️ Adquirir Planos</div>
+    </div>
+    <div class="store-body">
+      <div id="secAuth">
+        <div id="loggedInView" style="display:none;">
+          <div class="credit-box-large" style="background: linear-gradient(135deg, rgba(79,70,229,.05), rgba(124,58,237,.02)); border: 2px solid rgba(79,70,229,.2); padding: 30px; border-radius: 16px; text-align: center; margin-bottom: 25px;">
+             <div style="font-size:14px; text-transform:uppercase; color:var(--brand); font-weight:900; letter-spacing:2px; margin-bottom:10px;">💎 SEUS CRÉDITOS OFICIAIS</div>
+             <div style="font-size: 85px; font-weight: 900; color: var(--brand); line-height: 1; margin: 15px 0; text-shadow: 0 4px 20px rgba(79,70,229,.2);" id="storeCreditNum">0</div>
+             <div style="font-size:14px; color:var(--ui-muted); font-weight:600; margin-top:10px;">Gerações de PDF Disponíveis</div>
+          </div>
+          
+          <div style="margin-bottom:15px; text-align:left; background: rgba(16,185,129,0.05); padding: 15px; border-radius: 12px; border: 1px solid rgba(16,185,129,0.2);">
+             <label style="color:var(--success); margin-top:0;">Seu CPF (Exigido pelo Banco Central p/ PIX)</label>
+             <div style="display:flex; gap:8px;">
+                 <input id="uCpf" placeholder="000.000.000-00" maxlength="14" oninput="this.value=this.value.replace(/\D/g,'').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2')" style="margin:0;">
+                 <button class="btn" style="background:#10b981; color:#fff; border:none; padding:0 20px;" onclick="updateCPF()">Salvar</button>
+             </div>
+          </div>
+          
+          <button class="btn-magic" style="margin-bottom:15px; padding: 18px; font-size:14px;" onclick="switchStoreTab('plans')">➕ Comprar Mais Créditos</button>
+          <button class="btn" style="width:100%; padding:14px; border-radius:10px;" onclick="logout()">Sair da Conta</button>
+        </div>
+        <div id="authForms">
+          <div style="display:flex; background:var(--ui-bg); border-radius:12px; padding:6px; margin-bottom:20px;">
+            <div style="flex:1; text-align:center; padding:12px; cursor:pointer; border-radius:8px; font-size:13px; font-weight:800;" id="btnLog" class="active" onclick="toggleLogReg('login')">Fazer Login</div>
+            <div style="flex:1; text-align:center; padding:12px; cursor:pointer; border-radius:8px; font-size:13px; font-weight:800;" id="btnReg" onclick="toggleLogReg('reg')">Nova Conta</div>
+          </div>
+          <div id="formLogin">
+            <label class="no-top">E-mail de Acesso</label>
+            <input id="lEmail" type="email" placeholder="seu@email.com">
+            <label>Senha</label>
+            <input id="lSenha" type="password" placeholder="******" onkeydown="if(event.key==='Enter')doAuth()">
+            <button class="btn-magic" style="padding: 16px; font-size:14px; margin-top:15px;" onclick="doAuth()">Entrar no Painel</button>
+          </div>
+          
+          <div id="formReg" style="display:none;">
+            <label class="no-top">Seu Nome</label>
+            <input id="rNome" placeholder="Nome Completo">
+            <label>E-mail</label>
+            <input id="rEmail" type="email" placeholder="seu@email.com">
+            <label>Crie uma Senha (mín. 6 letras)</label>
+            <input id="rSenha" type="password" placeholder="******">
+            <label>CPF (Opcional)</label>
+            <input id="rCpf" placeholder="000.000.000-00" maxlength="14" oninput="this.value=this.value.replace(/\D/g,'').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2')">
+            <button class="btn-magic" style="margin-top:20px; padding: 16px; font-size:14px;" onclick="doRegister()">Criar Minha Conta</button>
+          </div>
+        </div>
+      </div>
+      
+      <div id="secPlans" style="display:none;">
+        <p style="font-size:13px; color:var(--ui-muted); margin-bottom:20px; text-align:center;"><span style="color:var(--success);font-weight:900;">🔒 Ambiente Seguro Mercado Pago/Asaas.</span><br>Os créditos entram na sua conta instantaneamente.</p>
+        <div id="dynamicPlansContainer"><div style="text-align:center; padding: 20px; color: var(--ui-muted);">Carregando planos da loja...</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<aside class="sidebar no-print" id="sidebar">
+  <div class="sidebar-header" style="flex-direction:column; gap:10px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; width:100%;">
+      <div class="brand">
+        <div class="brand-logo" style="background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%); font-family: 'Montserrat', sans-serif; font-style: italic;">KX</div>
+        <div>
+           <div class="brand-name" style="background: linear-gradient(90deg, #1e293b 0%, #4f46e5 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-family: 'Montserrat', sans-serif;">KONEX CREATIVE</div>
+           <div style="font-size:11px; color:var(--brand); font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Currículo Inteligente</div>
+        </div>
+      </div>
+      <div id="sidebarCreditBadge" class="credit-badge-top" onclick="openStore()">CRÉDITOS: 0</div>
+    </div>
+    <div id="userStatusBar" style="display:none; width:100%; background:rgba(79,70,229,.05); border:1px solid rgba(79,70,229,.15); border-radius:10px; padding:10px 14px; display:flex; align-items:center; justify-content:space-between;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div style="width:32px;height:32px;border-radius:50%;background:var(--brand-grd);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;" id="appUserAvatar">?</div>
+        <div>
+          <div style="font-size:12px;font-weight:900;color:var(--brand);" id="appUserName">Usuário</div>
+          <div style="font-size:11px;color:var(--ui-muted);" id="appUserEmail">—</div>
+        </div>
+      </div>
+      <button onclick="appLogout()" style="background:transparent; border:1px solid rgba(239,68,68,.3); color:#ef4444; border-radius:8px; padding:6px 12px; font-size:11px; font-weight:800; cursor:pointer; transition:.2s;">🚪 Sair</button>
+    </div>
+    <div id="userNotLoggedBar" style="display:none; width:100%; background:rgba(245,158,11,.05); border:1px solid rgba(245,158,11,.2); border-radius:10px; padding:10px 14px; display:flex; align-items:center; justify-content:space-between;">
+      <span style="font-size:11px;color:var(--warn);font-weight:800;">⚠️ Você não está logado</span>
+      <button onclick="openStore()" style="background:var(--brand-grd);border:none;color:#fff;border-radius:8px;padding:8px 14px;font-size:11px;font-weight:900;cursor:pointer;box-shadow: 0 4px 10px rgba(79,70,229,.2);">Entrar / Criar Conta</button>
+    </div>
+  </div>
+
+  <div class="sidebar-content">
+    <div class="top-actions">
+      <button class="btn-top-action btn-store" onclick="openStore()">🛒 Loja / Créditos</button>
+      <button class="btn-top-action btn-video" style="background:#fff;" onclick="openVideoModal()">▶ Como Funciona</button>
+    </div>
+
+    <div style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(16, 185, 129, 0.01)); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 14px; padding: 20px; margin-bottom: 25px; box-shadow: var(--shadow-sm);">
+        <div style="font-size: 13px; font-weight: 900; color: var(--success); margin-bottom: 8px; text-transform: uppercase; display: flex; align-items: center; gap: 6px;">✨ Importação Mágica (IA)</div>
+        <p style="font-size: 12px; color: var(--ui-muted); margin-bottom: 15px; line-height: 1.5;">Faça upload do seu currículo antigo (<strong>PDF ou Word</strong>). Nossa Inteligência Artificial fará a leitura e organizará tudo nos campos corretos automaticamente!</p>
+        <div style="display: flex; gap: 8px;">
+            <label class="btn active" style="flex: 1; cursor: pointer; text-align: center; margin: 0; background: var(--success); border-color: var(--success); font-size: 13px; padding: 14px; box-shadow: 0 4px 15px rgba(16,185,129,0.25);">
+                📤 Enviar PDF / Word Antigo
+                <input type="file" id="uploadResumeFile" accept=".doc,.docx,.pdf" style="display: none;" onchange="handleResumeUpload(event)">
+            </label>
+        </div>
+    </div>
+
+    <div class="wizard-nav">
+        <div class="w-step active" id="navStep1" onclick="goToStep(1)">👤 Perfil</div>
+        <div class="w-step" id="navStep2" onclick="goToStep(2)">📸 Foto/QR</div>
+        <div class="w-step" id="navStep3" onclick="goToStep(3)">🤖 Textos/IA</div>
+        <div class="w-step" id="navStep4" onclick="goToStep(4)">💼 Exp./Edu.</div>
+        <div class="w-step" id="navStep5" onclick="goToStep(5)">🎨 Design</div>
+    </div>
+
+    <div class="step-pane active" id="paneStep1">
+        <div class="step-pane-title">📍 Perfil & Contato</div>
+        <label class="no-top">Nome Completo</label>
+        <input id="inNome" placeholder="Ex: João da Silva Santos" onblur="autoDetectGender(this.value)" oninput="render();saveData()">
+        
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
+          <div><label>Gênero (Para IA)</label><select id="inGender" onchange="setAiGender(this.value); saveData()"><option value="H">Masculino (O)</option><option value="M">Feminino (A)</option><option value="O">Neutro (X)</option></select></div>
+          <div><label>Estado Civil</label><input id="inEstadoCivil" placeholder="Ex: Solteiro(a)" oninput="render();saveData()"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
+          <div><label>Data Nasc.</label><input id="inNasc" placeholder="Ex: 15/08/1995" oninput="render();saveData()"></div>
+          <div><label>WhatsApp</label><input id="inCel" placeholder="Ex: (11) 99999-9999" oninput="render();saveData()"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
+          <div><label>Telefone 2</label><input id="inRecado" placeholder="Ex: (11) 98888-8888" oninput="render();saveData()"></div>
+          <div><label>E-mail</label><input id="inEmail" placeholder="Ex: joao@email.com" oninput="render();saveData()"></div>
+        </div>
+        <label>Endereço e Cidade/UF</label><input id="inRua" placeholder="Ex: Av. Paulista, 1000 - São Paulo/SP" oninput="render();saveData()">
+        <label>LinkedIn ou Portfólio</label><input id="inLink" placeholder="Ex: linkedin.com/in/joaosilva" oninput="render();saveData()">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
+          <div><label>CNH (Opcional)</label><select id="selCNHCat" onchange="render();saveData()"><option value="">Não possuo</option><option value="A">Cat. A</option><option value="B">Cat. B</option><option value="AB">Cat. AB</option><option value="C">Cat. C</option><option value="D">Cat. D</option><option value="E">Cat. E</option></select></div>
+          <div><label>Nº CNH</label><input id="inCNH" placeholder="Ex: 123456789" oninput="render();saveData()"></div>
+        </div>
+    </div>
+
+    <div class="step-pane" id="paneStep2">
+        <div class="step-pane-title">📷 Mídia & Alinhamento</div>
+        <label class="no-top" style="color:var(--brand); font-size:13px; margin-bottom:10px;">Posição do Cabeçalho</label>
+        <div class="btn-group" style="margin-top:0; margin-bottom: 20px;">
+          <button class="btn active" id="btnPosLeft" onclick="setPhotoPos('left')">◀ Lado Esquerdo</button>
+          <button class="btn" id="btnPosRight" onclick="setPhotoPos('right')">Lado Direito ▶</button>
+        </div>
+        <label class="no-top">Sua Foto de Perfil</label>
+        <p style="font-size:11px; color:var(--ui-muted); margin-bottom:10px;">Recomendamos fotos com fundo neutro e boa iluminação.</p>
+        <input type="file" id="inFoto" accept="image/*" onchange="initCropper(event)" style="padding:10px; height:auto; background:var(--ui-input-bg);">
+        <button class="btn-red" style="margin-top:10px; margin-bottom:15px;" onclick="removePhoto()">🗑 Remover Foto Atual</button>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom: 30px;">
+            <div>
+                <label class="no-top">Formato da Foto</label>
+                <select id="selPhotoShape" onchange="render();saveData()">
+                    <option value="50%">Redonda</option>
+                    <option value="15px">Cantos Arredondados</option>
+                    <option value="0px">Quadrada</option>
+                </select>
+            </div>
+            <div>
+                <label class="no-top">Tamanho da Foto</label>
+                <input type="range" id="rngPhotoSize" min="50" max="180" value="90" oninput="render();saveData()">
+            </div>
+        </div>
+        
+        <div class="qr-box" style="margin-top:0;">
+            <label class="no-top" style="color:var(--success); font-size:13px; display:flex; align-items:center; gap:8px; cursor:pointer;">
+                <input type="checkbox" id="chkQR" style="width:auto; height:auto; margin:0;" onchange="render();saveData();"> Incluir QR Code do WhatsApp
+            </label>
+            <div id="qrConfig" style="display:none; margin-top:15px; border-top: 1px solid var(--ui-border-light); padding-top: 15px;">
+                <label class="no-top">Número com DDI</label>
+                <input id="inQRPhone" placeholder="Ex: 5511999999999" value="55" oninput="render();saveData()">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;">
+                    <div><label class="no-top">Posição</label><select id="selQRPos" onchange="render();saveData()"><option value="foto">No Cabeçalho</option><option value="flutuante">Livre (Arrastar)</option></select></div>
+                    <div><label class="no-top">Cor do QR</label><input type="color" id="inQRColor" value="#0f172a" oninput="render();saveData()" style="padding:2px; height:38px;"></div>
+                </div>
+                <label>Tamanho do QR Code</label><input type="range" id="rngQRSize" min="50" max="150" value="80" oninput="render();saveData()">
+                <p style="font-size:10px; color:var(--ui-muted); margin-top:10px;">A cor do QR também muda automaticamente ao selecionar um tema no Passo 5.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="step-pane" id="paneStep3">
+        <div class="step-pane-title">🤖 Textos & Inteligência Artificial</div>
+        
+        <div class="ai-box">
+            <div class="ai-title">🧠 Inteligência Artificial (ATS Real)</div>
+            <p style="font-size:12px; color:var(--ui-muted); margin-bottom: 20px; line-height: 1.5;">Nossa IA analisa sua experiência e cria Objetivo, Resumo e Habilidades altamente conversivos e organizados para os sistemas de RH.</p>
+
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <label class="no-top" style="color:var(--brand); margin-top:0;">Sua experiência (cole aqui)</label>
+                <div id="aiUsageBadge" style="font-size:10px; font-weight:900; background:rgba(79,70,229,0.15); color:var(--brand); padding:4px 8px; border-radius:6px;">Gerações IA: —</div>
+            </div>
+            
+            <div class="info-box" style="margin-top: 8px; background: rgba(79,70,229,0.05); border-left: 4px solid var(--brand); padding: 14px 16px; border-radius: 0 8px 8px 0; font-size: 12px; color: var(--ui-muted);">
+                💡 <strong>Dica:</strong> Escreva os cargos que ocupou, tempo de empresa e principais resultados alcançados. Pode colar de qualquer jeito, a IA arruma!
+            </div>
+            
+            <textarea id="aiExperience" placeholder="Ex: Atuei por 4 anos como Gerente de Vendas na empresa X. Liderava uma equipe de 10 pessoas, aumentei o faturamento em 20% criando metas quinzenais e reduzi as reclamações..." oninput="saveData()" style="min-height:120px;"></textarea>
+            
+            <label class="no-top" style="color:var(--brand); margin-top:20px;">Vaga-alvo / descrição da vaga</label>
+            <textarea id="aiTargetJob" placeholder="Ex: Vaga para Gerente Comercial em concessionária. Precisa ter experiência em liderança, CRM e Excel avançado..." oninput="saveData()" style="min-height:100px; margin-top:8px;"></textarea>
+            
+            <button class="btn-magic" style="margin-top:20px;" onclick="aiRealGenerate()">⚡ GERAR CURRÍCULO COM IA REAL</button>
+            
+            <label class="no-top" style="color:var(--brand); margin-top:25px; border-top: 1px solid var(--ui-border); padding-top: 20px;">Bullets Sugeridos para Experiência</label>
+            <p style="font-size:11px; color:var(--ui-muted); margin-bottom: 10px;">A IA criará tópicos profissionais descrevendo seus resultados.</p>
+            <textarea id="aiBulletsOut" placeholder="Os bullets gerados aparecerão aqui..." style="min-height:100px;" readonly></textarea>
+            
+            <button class="btn-ai-apply" onclick="applyAIBullets()">✨ Aplicar nas Minhas Experiências</button>
+        </div>
+
+        <label>Objetivo Profissional (Opcional)</label><input id="inObj" placeholder="Ex: Atuar como Analista Financeiro" oninput="render();saveData()">
+        <label>Resumo Profissional</label><textarea id="inRes" placeholder="Ex: Profissional com 5 anos de experiência na área administrativa, focado em otimização de processos..." oninput="render();saveData()"></textarea>
+        <label>Habilidades / Competências</label><textarea id="inSkills" placeholder="Ex:&#10;• Liderança&#10;• Pacote Office&#10;• Trabalho em equipe" oninput="render();saveData()"></textarea>
+        <label>Idiomas</label><textarea id="inIdiomas" placeholder="Ex: Inglês — Avançado&#10;Espanhol — Básico" oninput="render();saveData()" style="min-height:80px;"></textarea>
+        <label>Informações Adicionais</label><textarea id="inInfos" placeholder="Ex: Disponibilidade para viagens, Cursos extracurriculares..." oninput="render();saveData()" style="min-height:80px;"></textarea>
+    </div>
+
+    <div class="step-pane" id="paneStep4">
+        <div class="step-pane-title">🏢 Experiência & Formação</div>
+        <label class="no-top" style="color:var(--brand); font-size:14px; margin-bottom:15px;">Experiência Profissional</label>
+        <div id="listExp"></div>
+        <button class="btn" style="width:100%; margin-bottom:30px; border-color:var(--brand); color:var(--brand);" onclick="addExp()">➕ Adicionar Nova Experiência</button>
+        
+        <label style="color:var(--success); font-size:14px; margin-bottom:15px;">Formação Acadêmica</label>
+        <div id="listEdu"></div>
+        <button class="btn" style="width:100%; border-color:var(--success); color:var(--success);" onclick="addEdu()">➕ Adicionar Nova Formação</button>
+    </div>
+
+    <div class="step-pane" id="paneStep5">
+        <div class="step-pane-title">🎨 Design & Estrutura Visual</div>
+
+        <button class="btn-roulette" onclick="openRoulette()">
+          <span style="font-size:22px;">🎰</span>
+          <span>ROLETA SURPREENDENTE — 100 Variações</span>
+        </button>
+
+        <label class="no-top" style="color:var(--brand); font-size:13px; margin-bottom:10px;">Escolha um Tema Pronto Profissional</label>
+        <div class="theme-grid" id="themeGridContainer"></div>
+        
+        <label style="margin-top:25px; border-top: 1px solid var(--ui-border); padding-top: 20px; color:var(--brand); font-weight:700;">🖼️ Layout do Currículo</label>
+        
+        <div id="layoutVisualGrid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px;">
+          
+          <div class="layout-thumb active" data-layout="layout-classic lay-8" data-style="var-1" onclick="selectLayoutVisual(this)" style="cursor:pointer;border:2px solid var(--primary);border-radius:10px;background:#fff;overflow:hidden;transition:.2s;padding:0">
+            <div style="background:#1e3a8a;height:20px;display:flex;align-items:center;padding:0 6px;gap:4px">
+              <div style="width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.25)"></div>
+              <div style="height:5px;background:rgba(255,255,255,.6);border-radius:2px;flex:1"></div>
+            </div>
+            <div style="padding:5px 6px">
+              <div style="height:3px;background:#e2e8f0;border-radius:2px;margin-bottom:2px;width:100%"></div>
+              <div style="height:3px;background:#e2e8f0;border-radius:2px;margin-bottom:4px;width:75%"></div>
+              <div style="height:2px;background:#bfdbfe;border-radius:1px;margin-bottom:2px;width:40%"></div>
+              <div style="height:2px;background:#e2e8f0;border-radius:1px;margin-bottom:2px"></div>
+              <div style="height:2px;background:#e2e8f0;border-radius:1px;width:80%"></div>
+            </div>
+            <div style="text-align:center;font-size:9px;font-weight:700;color:#1e3a8a;padding:3px;background:#f8fafc;border-top:1px solid #e2e8f0">1 Coluna Clássico</div>
+          </div>
+
+          <div class="layout-thumb" data-layout="layout-side-left lay-12" data-style="var-1" onclick="selectLayoutVisual(this)" style="cursor:pointer;border:2px solid #e2e8f0;border-radius:10px;background:#fff;overflow:hidden;transition:.2s;padding:0">
+            <div style="background:#2563eb;height:20px;display:flex;align-items:center;padding:0 6px;gap:4px">
+              <div style="width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.3)"></div>
+              <div style="height:5px;background:rgba(255,255,255,.5);border-radius:2px;flex:1"></div>
+            </div>
+            <div style="display:flex;height:62px">
+              <div style="width:30%;background:#2563eb;padding:4px 3px">
+                <div style="height:2px;background:rgba(255,255,255,.3);border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:2px;background:rgba(255,255,255,.2);border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:2px;background:rgba(255,255,255,.3);border-radius:1px;width:70%"></div>
+              </div>
+              <div style="flex:1;padding:4px 5px">
+                <div style="height:2px;background:#e2e8f0;border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:2px;background:#e2e8f0;border-radius:1px;margin-bottom:2px;width:80%"></div>
+                <div style="height:2px;background:#e2e8f0;border-radius:1px;width:65%"></div>
+              </div>
+            </div>
+            <div style="text-align:center;font-size:9px;font-weight:700;color:#2563eb;padding:3px;background:#f8fafc;border-top:1px solid #e2e8f0">Lateral Esquerda</div>
+          </div>
+
+          <div class="layout-thumb" data-layout="layout-side-right lay-14" data-style="var-9" onclick="selectLayoutVisual(this)" style="cursor:pointer;border:2px solid #e2e8f0;border-radius:10px;background:#fff;overflow:hidden;transition:.2s;padding:0">
+            <div style="background:#7c3aed;height:20px;display:flex;align-items:center;padding:0 6px;gap:4px">
+              <div style="width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.3)"></div>
+              <div style="height:5px;background:rgba(255,255,255,.5);border-radius:2px;flex:1"></div>
+            </div>
+            <div style="display:flex;height:62px;flex-direction:row-reverse">
+              <div style="width:30%;background:#7c3aed;padding:4px 3px">
+                <div style="height:2px;background:rgba(255,255,255,.3);border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:2px;background:rgba(255,255,255,.2);border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:2px;background:rgba(255,255,255,.3);border-radius:1px;width:70%"></div>
+              </div>
+              <div style="flex:1;padding:4px 5px">
+                <div style="height:2px;background:#e2e8f0;border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:2px;background:#e2e8f0;border-radius:1px;margin-bottom:2px;width:80%"></div>
+                <div style="height:2px;background:#e2e8f0;border-radius:1px;width:65%"></div>
+              </div>
+            </div>
+            <div style="text-align:center;font-size:9px;font-weight:700;color:#7c3aed;padding:3px;background:#f8fafc;border-top:1px solid #e2e8f0">Lateral Direita</div>
+          </div>
+
+          <div class="layout-thumb" data-layout="layout-geo lay-13" data-style="var-6" onclick="selectLayoutVisual(this)" style="cursor:pointer;border:2px solid #e2e8f0;border-radius:10px;background:#fff;overflow:hidden;transition:.2s;padding:0">
+            <div style="background:linear-gradient(135deg,#0ea5e9,#0369a1);height:28px;display:flex;align-items:center;padding:0 6px;gap:5px">
+              <div style="width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,.25);border:1.5px solid rgba(255,255,255,.5)"></div>
+              <div><div style="height:4px;background:rgba(255,255,255,.7);border-radius:2px;width:55px;margin-bottom:2px"></div><div style="height:3px;background:rgba(255,255,255,.4);border-radius:2px;width:40px"></div></div>
+            </div>
+            <div style="padding:5px 6px;display:flex;gap:5px">
+              <div style="flex:1"><div style="height:2px;background:#e2e8f0;border-radius:1px;margin-bottom:2px"></div><div style="height:2px;background:#e2e8f0;border-radius:1px;width:70%"></div></div>
+              <div style="flex:1"><div style="height:2px;background:#bae6fd;border-radius:1px;margin-bottom:2px"></div><div style="height:2px;background:#e2e8f0;border-radius:1px;width:80%"></div></div>
+            </div>
+            <div style="text-align:center;font-size:9px;font-weight:700;color:#0369a1;padding:3px;background:#f0f9ff;border-top:1px solid #bae6fd">Geométrico</div>
+          </div>
+
+          <div class="layout-thumb" data-layout="layout-artistic lay-22" data-style="var-6" onclick="selectLayoutVisual(this)" style="cursor:pointer;border:2px solid #e2e8f0;border-radius:10px;background:#fff;overflow:hidden;transition:.2s;padding:0">
+            <div style="display:flex;height:82px">
+              <div style="width:6px;background:linear-gradient(180deg,#ec4899,#f97316)"></div>
+              <div style="flex:1;padding:6px 7px">
+                <div style="font-size:9px;font-weight:900;color:#111;margin-bottom:2px">NOME AQUI</div>
+                <div style="height:3px;background:#fce7f3;border-radius:2px;margin-bottom:4px;width:65%"></div>
+                <div style="display:flex;gap:4px">
+                  <div style="flex:1"><div style="height:2px;background:#e2e8f0;border-radius:1px;margin-bottom:2px"></div><div style="height:2px;background:#e2e8f0;border-radius:1px;width:80%"></div></div>
+                  <div style="flex:1"><div style="height:2px;background:#e2e8f0;border-radius:1px;margin-bottom:2px"></div><div style="height:2px;background:#e2e8f0;border-radius:1px;width:70%"></div></div>
+                </div>
+              </div>
+            </div>
+            <div style="text-align:center;font-size:9px;font-weight:700;color:#ec4899;padding:3px;background:#fff5f9;border-top:1px solid #fce7f3">Artístico</div>
+          </div>
+
+          <div class="layout-thumb" data-layout="layout-minimal lay-26" data-style="var-3" onclick="selectLayoutVisual(this)" style="cursor:pointer;border:2px solid #e2e8f0;border-radius:10px;background:#fafafa;overflow:hidden;transition:.2s;padding:0">
+            <div style="padding:8px 8px 4px;text-align:center;border-bottom:2px solid #111">
+              <div style="font-size:9px;font-weight:900;color:#111;margin-bottom:1px">NOME COMPLETO</div>
+              <div style="height:3px;background:#e2e8f0;border-radius:2px;width:50%;margin:0 auto"></div>
+            </div>
+            <div style="padding:5px 7px">
+              <div style="height:2px;background:#e2e8f0;border-radius:1px;margin-bottom:2px"></div>
+              <div style="height:2px;background:#e2e8f0;border-radius:1px;width:80%;margin-bottom:2px"></div>
+              <div style="height:1.5px;background:#f1f5f9;border-radius:1px;width:40%;margin-bottom:2px"></div>
+              <div style="height:1.5px;background:#e2e8f0;border-radius:1px"></div>
+            </div>
+            <div style="text-align:center;font-size:9px;font-weight:700;color:#111;padding:3px;background:#f5f5f5;border-top:1px solid #e2e8f0">Minimalista</div>
+          </div>
+
+          <div class="layout-thumb" data-layout="layout-boxed lay-11" data-style="var-14" onclick="selectLayoutVisual(this)" style="cursor:pointer;border:2px solid #e2e8f0;border-radius:10px;background:#fff;overflow:hidden;transition:.2s;padding:0">
+            <div style="margin:4px;border:2px solid #1e3a8a;border-radius:6px;overflow:hidden">
+              <div style="background:#1e3a8a;padding:5px 7px;display:flex;align-items:center;gap:4px">
+                <div style="width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.3)"></div>
+                <div style="height:4px;background:rgba(255,255,255,.6);border-radius:2px;flex:1"></div>
+              </div>
+              <div style="padding:4px 6px">
+                <div style="height:2px;background:#dbeafe;border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:2px;background:#e2e8f0;border-radius:1px;width:75%"></div>
+              </div>
+            </div>
+            <div style="text-align:center;font-size:9px;font-weight:700;color:#1e3a8a;padding:3px;background:#f8fafc;border-top:1px solid #e2e8f0">Executivo Boxed</div>
+          </div>
+
+          <div class="layout-thumb" data-layout="layout-side-left lay-12" data-style="var-9" data-bg="#0f172a" data-sec="#1e293b" data-font="#f1f5f9" data-side="#94a3b8" onclick="selectLayoutVisual(this,true)" style="cursor:pointer;border:2px solid #e2e8f0;border-radius:10px;background:#0f172a;overflow:hidden;transition:.2s;padding:0">
+            <div style="background:linear-gradient(135deg,#6366f1,#7c3aed);height:22px;display:flex;align-items:center;padding:0 6px;gap:4px">
+              <div style="width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.25)"></div>
+              <div style="height:4px;background:rgba(255,255,255,.5);border-radius:2px;flex:1"></div>
+            </div>
+            <div style="display:flex;height:55px">
+              <div style="width:30%;background:#1e293b;padding:4px 3px">
+                <div style="height:2px;background:rgba(99,102,241,.5);border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:2px;background:rgba(255,255,255,.15);border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:2px;background:rgba(255,255,255,.1);border-radius:1px;width:70%"></div>
+              </div>
+              <div style="flex:1;padding:4px 5px">
+                <div style="height:2px;background:rgba(255,255,255,.15);border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:2px;background:rgba(255,255,255,.1);border-radius:1px;width:80%"></div>
+              </div>
+            </div>
+            <div style="text-align:center;font-size:9px;font-weight:700;color:#a5b4fc;padding:3px;background:#1e293b;border-top:1px solid rgba(99,102,241,.3)">Dark Profissional</div>
+          </div>
+
+          <!-- ── 10 NOVOS MODELOS DE LAYOUT ── -->
+
+          <!-- 9. Konex Neon Dark -->
+          <div class="layout-thumb" data-layout="layout-side-left lay-12" data-style="var-1" data-bg="#00d4ff" data-sec="#01040a" data-font="#b2ff00" data-side="#b2ff00" onclick="selectLayoutVisual(this,true)" style="cursor:pointer;border:2px solid #e2e8f0;border-radius:10px;background:#01040a;overflow:hidden;transition:.2s;padding:0">
+            <div style="background:linear-gradient(135deg,#00d4ff,#b2ff00);height:22px;display:flex;align-items:center;padding:0 6px;gap:4px">
+              <div style="width:12px;height:12px;border-radius:50%;background:rgba(0,0,0,.3)"></div>
+              <div style="height:4px;background:rgba(255,255,255,.6);border-radius:2px;flex:1"></div>
+            </div>
+            <div style="display:flex;height:55px">
+              <div style="width:30%;background:#00d4ff;padding:4px 3px">
+                <div style="height:2px;background:rgba(1,4,10,.5);border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:2px;background:rgba(1,4,10,.3);border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:2px;background:rgba(178,255,0,.5);border-radius:1px;width:70%"></div>
+              </div>
+              <div style="flex:1;padding:4px 5px">
+                <div style="height:2px;background:rgba(0,212,255,.4);border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:2px;background:rgba(178,255,0,.3);border-radius:1px;width:80%"></div>
+              </div>
+            </div>
+            <div style="text-align:center;font-size:9px;font-weight:700;color:#00d4ff;padding:3px;background:#030a1a;border-top:1px solid rgba(0,212,255,.3)">Konex Neon</div>
+          </div>
+
+          <!-- 10. Cyber Geométrico -->
+          <div class="layout-thumb" data-layout="layout-geo lay-13" data-style="var-4" data-bg="#b2ff00" data-sec="#06122d" data-font="#f8fafc" data-side="#f8fafc" onclick="selectLayoutVisual(this,true)" style="cursor:pointer;border:2px solid #e2e8f0;border-radius:10px;background:#06122d;overflow:hidden;transition:.2s;padding:0">
+            <div style="background:linear-gradient(135deg,#b2ff00,#00d4ff);height:28px;display:flex;align-items:center;padding:0 6px;gap:5px">
+              <div style="width:16px;height:16px;border-radius:50%;background:rgba(6,18,45,.3);border:1.5px solid rgba(6,18,45,.5)"></div>
+              <div><div style="height:4px;background:rgba(6,18,45,.7);border-radius:2px;width:55px;margin-bottom:2px"></div><div style="height:3px;background:rgba(6,18,45,.4);border-radius:2px;width:40px"></div></div>
+            </div>
+            <div style="padding:5px 6px;display:flex;gap:5px">
+              <div style="flex:1"><div style="height:2px;background:rgba(178,255,0,.4);border-radius:1px;margin-bottom:2px"></div><div style="height:2px;background:rgba(0,212,255,.3);border-radius:1px;width:70%"></div></div>
+              <div style="flex:1"><div style="height:2px;background:rgba(0,212,255,.3);border-radius:1px;margin-bottom:2px"></div><div style="height:2px;background:rgba(178,255,0,.2);border-radius:1px;width:80%"></div></div>
+            </div>
+            <div style="text-align:center;font-size:9px;font-weight:700;color:#b2ff00;padding:3px;background:#030a1a;border-top:1px solid rgba(178,255,0,.3)">Cyber Geométrico</div>
+          </div>
+
+          <!-- 11. Magenta Pop Artístico -->
+          <div class="layout-thumb" data-layout="layout-artistic lay-22" data-style="var-2" data-bg="#d946ef" data-sec="#1e1b4b" data-font="#f5f3ff" data-side="#fbbf24" onclick="selectLayoutVisual(this,true)" style="cursor:pointer;border:2px solid #e2e8f0;border-radius:10px;background:#1e1b4b;overflow:hidden;transition:.2s;padding:0">
+            <div style="display:flex;height:82px">
+              <div style="width:6px;background:linear-gradient(180deg,#d946ef,#fbbf24)"></div>
+              <div style="flex:1;padding:6px 7px">
+                <div style="font-size:9px;font-weight:900;color:#fbbf24;margin-bottom:2px">NOME AQUI</div>
+                <div style="height:3px;background:rgba(217,70,239,.5);border-radius:2px;margin-bottom:4px;width:65%"></div>
+                <div style="display:flex;gap:4px">
+                  <div style="flex:1"><div style="height:2px;background:rgba(245,243,255,.2);border-radius:1px;margin-bottom:2px"></div><div style="height:2px;background:rgba(245,243,255,.15);border-radius:1px;width:80%"></div></div>
+                  <div style="flex:1"><div style="height:2px;background:rgba(217,70,239,.3);border-radius:1px;margin-bottom:2px"></div><div style="height:2px;background:rgba(251,191,36,.2);border-radius:1px;width:70%"></div></div>
+                </div>
+              </div>
+            </div>
+            <div style="text-align:center;font-size:9px;font-weight:700;color:#d946ef;padding:3px;background:#2d1b69;border-top:1px solid rgba(217,70,239,.3)">Magenta Pop</div>
+          </div>
+
+          <!-- 12. Oceanic Boxed -->
+          <div class="layout-thumb" data-layout="layout-boxed lay-11" data-style="var-5" data-bg="#0369a1" data-sec="#e0f2fe" data-font="#0f172a" data-side="#ffffff" onclick="selectLayoutVisual(this,true)" style="cursor:pointer;border:2px solid #e2e8f0;border-radius:10px;background:#f0f9ff;overflow:hidden;transition:.2s;padding:0">
+            <div style="margin:4px;border:2px solid #0369a1;border-radius:6px;overflow:hidden">
+              <div style="background:linear-gradient(135deg,#0369a1,#14b8a6);padding:5px 7px;display:flex;align-items:center;gap:4px">
+                <div style="width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.3)"></div>
+                <div style="height:4px;background:rgba(255,255,255,.7);border-radius:2px;flex:1"></div>
+              </div>
+              <div style="padding:4px 6px">
+                <div style="height:2px;background:#bae6fd;border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:2px;background:#99f6e4;border-radius:1px;width:75%"></div>
+              </div>
+            </div>
+            <div style="text-align:center;font-size:9px;font-weight:700;color:#0369a1;padding:3px;background:#e0f2fe;border-top:1px solid #bae6fd">Oceanic Boxed</div>
+          </div>
+
+          <!-- 13. Coral Sunset Minimal -->
+          <div class="layout-thumb" data-layout="layout-minimal lay-26" data-style="var-3" data-bg="#f43f5e" data-sec="#fff1f2" data-font="#1c0a00" data-side="#ffffff" onclick="selectLayoutVisual(this,true)" style="cursor:pointer;border:2px solid #e2e8f0;border-radius:10px;background:#fff1f2;overflow:hidden;transition:.2s;padding:0">
+            <div style="padding:8px 8px 4px;text-align:center;border-bottom:2px solid #f43f5e">
+              <div style="font-size:9px;font-weight:900;color:#f43f5e;margin-bottom:1px">NOME COMPLETO</div>
+              <div style="height:3px;background:linear-gradient(90deg,#f43f5e,#f97316);border-radius:2px;width:50%;margin:0 auto 3px"></div>
+            </div>
+            <div style="padding:5px 7px">
+              <div style="height:2px;background:#fecdd3;border-radius:1px;margin-bottom:2px"></div>
+              <div style="height:2px;background:#fed7aa;border-radius:1px;width:80%;margin-bottom:2px"></div>
+              <div style="height:1.5px;background:#fecdd3;border-radius:1px;width:40%;margin-bottom:2px"></div>
+              <div style="height:1.5px;background:#fed7aa;border-radius:1px"></div>
+            </div>
+            <div style="text-align:center;font-size:9px;font-weight:700;color:#f43f5e;padding:3px;background:#fff1f2;border-top:1px solid #fecdd3">Coral Sunset</div>
+          </div>
+
+          <!-- 14. Forest Side Right -->
+          <div class="layout-thumb" data-layout="layout-side-right lay-14" data-style="var-7" data-bg="#166534" data-sec="#f0fdf4" data-font="#14532d" data-side="#ffffff" onclick="selectLayoutVisual(this,true)" style="cursor:pointer;border:2px solid #e2e8f0;border-radius:10px;background:#f0fdf4;overflow:hidden;transition:.2s;padding:0">
+            <div style="background:linear-gradient(135deg,#166534,#15803d);height:20px;display:flex;align-items:center;padding:0 6px;gap:4px">
+              <div style="width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.3)"></div>
+              <div style="height:5px;background:rgba(255,255,255,.5);border-radius:2px;flex:1"></div>
+            </div>
+            <div style="display:flex;height:62px;flex-direction:row-reverse">
+              <div style="width:30%;background:#166534;padding:4px 3px">
+                <div style="height:2px;background:rgba(132,204,22,.5);border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:2px;background:rgba(255,255,255,.3);border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:2px;background:rgba(132,204,22,.3);border-radius:1px;width:70%"></div>
+              </div>
+              <div style="flex:1;padding:4px 5px">
+                <div style="height:2px;background:#bbf7d0;border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:2px;background:#d1fae5;border-radius:1px;margin-bottom:2px;width:80%"></div>
+                <div style="height:2px;background:#bbf7d0;border-radius:1px;width:65%"></div>
+              </div>
+            </div>
+            <div style="text-align:center;font-size:9px;font-weight:700;color:#166534;padding:3px;background:#dcfce7;border-top:1px solid #bbf7d0">Forest Deep</div>
+          </div>
+
+          <!-- 15. Platinum Elite Lateral -->
+          <div class="layout-thumb" data-layout="layout-side-left lay-12" data-style="var-8" data-bg="#1e293b" data-sec="#f1f5f9" data-font="#334155" data-side="#f8fafc" onclick="selectLayoutVisual(this,true)" style="cursor:pointer;border:2px solid #e2e8f0;border-radius:10px;background:#fff;overflow:hidden;transition:.2s;padding:0">
+            <div style="background:linear-gradient(135deg,#1e293b,#334155);height:20px;display:flex;align-items:center;padding:0 6px;gap:4px">
+              <div style="width:12px;height:12px;border-radius:50%;background:rgba(148,163,184,.3)"></div>
+              <div style="height:5px;background:rgba(255,255,255,.4);border-radius:2px;flex:1"></div>
+            </div>
+            <div style="display:flex;height:62px">
+              <div style="width:30%;background:#1e293b;padding:4px 3px">
+                <div style="height:2px;background:rgba(148,163,184,.5);border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:2px;background:rgba(241,245,249,.25);border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:2px;background:rgba(148,163,184,.3);border-radius:1px;width:70%"></div>
+              </div>
+              <div style="flex:1;padding:4px 5px">
+                <div style="height:2px;background:#e2e8f0;border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:2px;background:#cbd5e1;border-radius:1px;margin-bottom:2px;width:80%"></div>
+                <div style="height:2px;background:#e2e8f0;border-radius:1px;width:65%"></div>
+              </div>
+            </div>
+            <div style="text-align:center;font-size:9px;font-weight:700;color:#1e293b;padding:3px;background:#f8fafc;border-top:1px solid #e2e8f0">Platinum Elite</div>
+          </div>
+
+          <!-- 16. Neon Pink Boxed -->
+          <div class="layout-thumb" data-layout="layout-boxed lay-11" data-style="var-9" data-bg="#ec4899" data-sec="#0f172a" data-font="#f1f5f9" data-side="#f1f5f9" onclick="selectLayoutVisual(this,true)" style="cursor:pointer;border:2px solid #e2e8f0;border-radius:10px;background:#0f172a;overflow:hidden;transition:.2s;padding:0">
+            <div style="margin:4px;border:2px solid #ec4899;border-radius:6px;overflow:hidden">
+              <div style="background:linear-gradient(135deg,#ec4899,#00d4ff);padding:5px 7px;display:flex;align-items:center;gap:4px">
+                <div style="width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.3)"></div>
+                <div style="height:4px;background:rgba(255,255,255,.7);border-radius:2px;flex:1"></div>
+              </div>
+              <div style="padding:4px 6px;background:#1e293b">
+                <div style="height:2px;background:rgba(236,72,153,.5);border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:2px;background:rgba(0,212,255,.3);border-radius:1px;width:75%"></div>
+              </div>
+            </div>
+            <div style="text-align:center;font-size:9px;font-weight:700;color:#ec4899;padding:3px;background:#1e293b;border-top:1px solid rgba(236,72,153,.3)">Neon Pink Dark</div>
+          </div>
+
+          <!-- 17. Galaxy Pro Lateral Direita -->
+          <div class="layout-thumb" data-layout="layout-side-right lay-14" data-style="var-1" data-bg="#7c3aed" data-sec="#1e1b4b" data-font="#e0e7ff" data-side="#e0e7ff" onclick="selectLayoutVisual(this,true)" style="cursor:pointer;border:2px solid #e2e8f0;border-radius:10px;background:#1e1b4b;overflow:hidden;transition:.2s;padding:0">
+            <div style="background:linear-gradient(135deg,#7c3aed,#2563eb);height:20px;display:flex;align-items:center;padding:0 6px;gap:4px">
+              <div style="width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.25)"></div>
+              <div style="height:4px;background:rgba(255,255,255,.5);border-radius:2px;flex:1"></div>
+            </div>
+            <div style="display:flex;height:62px;flex-direction:row-reverse">
+              <div style="width:30%;background:#312e81;padding:4px 3px">
+                <div style="height:2px;background:rgba(124,58,237,.6);border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:2px;background:rgba(224,231,255,.2);border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:2px;background:rgba(37,99,235,.4);border-radius:1px;width:70%"></div>
+              </div>
+              <div style="flex:1;padding:4px 5px">
+                <div style="height:2px;background:rgba(224,231,255,.15);border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:2px;background:rgba(124,58,237,.3);border-radius:1px;width:80%"></div>
+                <div style="height:2px;background:rgba(224,231,255,.1);border-radius:1px;width:65%;margin-top:2px"></div>
+              </div>
+            </div>
+            <div style="text-align:center;font-size:9px;font-weight:700;color:#a5b4fc;padding:3px;background:#312e81;border-top:1px solid rgba(124,58,237,.3)">Galaxy Pro</div>
+          </div>
+
+          <!-- 18. Space Classic -->
+          <div class="layout-thumb" data-layout="layout-classic lay-8" data-style="var-9" data-bg="#00d4ff" data-sec="#030a1a" data-font="#f8fafc" data-side="#f8fafc" onclick="selectLayoutVisual(this,true)" style="cursor:pointer;border:2px solid #e2e8f0;border-radius:10px;background:#030a1a;overflow:hidden;transition:.2s;padding:0">
+            <div style="background:linear-gradient(135deg,#00d4ff,#0097b2);height:20px;display:flex;align-items:center;padding:0 6px;gap:4px">
+              <div style="width:12px;height:12px;border-radius:50%;background:rgba(1,4,10,.25)"></div>
+              <div style="height:5px;background:rgba(1,4,10,.5);border-radius:2px;flex:1"></div>
+            </div>
+            <div style="padding:5px 6px">
+              <div style="height:3px;background:rgba(0,212,255,.3);border-radius:2px;margin-bottom:2px;width:100%"></div>
+              <div style="height:3px;background:rgba(0,212,255,.2);border-radius:2px;margin-bottom:4px;width:75%"></div>
+              <div style="height:2px;background:rgba(178,255,0,.3);border-radius:1px;margin-bottom:2px;width:40%"></div>
+              <div style="height:2px;background:rgba(0,212,255,.15);border-radius:1px;margin-bottom:2px"></div>
+              <div style="height:2px;background:rgba(0,212,255,.1);border-radius:1px;width:80%"></div>
+            </div>
+            <div style="text-align:center;font-size:9px;font-weight:700;color:#00d4ff;padding:3px;background:#01040a;border-top:1px solid rgba(0,212,255,.3)">Space Dark</div>
+          </div>
+
+          <!-- 19. Teal Classic -->
+          <div class="layout-thumb" data-layout="layout-classic lay-8" data-style="var-7" data-bg="#0d9488" data-sec="#f0fdfa" data-font="#134e4a" data-side="#ffffff" onclick="selectLayoutVisual(this,true)" style="cursor:pointer;border:2px solid #e2e8f0;border-radius:10px;background:#f0fdfa;overflow:hidden;transition:.2s;padding:0">
+            <div style="background:linear-gradient(135deg,#0d9488,#14b8a6);height:20px;display:flex;align-items:center;padding:0 6px;gap:4px">
+              <div style="width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.3)"></div>
+              <div style="height:5px;background:rgba(255,255,255,.6);border-radius:2px;flex:1"></div>
+            </div>
+            <div style="padding:5px 6px">
+              <div style="height:3px;background:#99f6e4;border-radius:2px;margin-bottom:2px;width:100%"></div>
+              <div style="height:3px;background:#ccfbf1;border-radius:2px;margin-bottom:4px;width:75%"></div>
+              <div style="height:2px;background:#5eead4;border-radius:1px;margin-bottom:2px;width:40%"></div>
+              <div style="height:2px;background:#ccfbf1;border-radius:1px;margin-bottom:2px"></div>
+            </div>
+            <div style="text-align:center;font-size:9px;font-weight:700;color:#0d9488;padding:3px;background:#f0fdfa;border-top:1px solid #99f6e4">Teal Clean</div>
+          </div>
+
+          <!-- 20. Rose Minimal -->
+          <div class="layout-thumb" data-layout="layout-minimal lay-26" data-style="var-3" data-bg="#be185d" data-sec="#fdf2f8" data-font="#500724" data-side="#ffffff" onclick="selectLayoutVisual(this,true)" style="cursor:pointer;border:2px solid #e2e8f0;border-radius:10px;background:#fdf2f8;overflow:hidden;transition:.2s;padding:0">
+            <div style="padding:8px 8px 4px;text-align:center;border-bottom:2px solid #be185d">
+              <div style="font-size:9px;font-weight:900;color:#be185d;margin-bottom:1px">NOME COMPLETO</div>
+              <div style="height:3px;background:linear-gradient(90deg,#be185d,#ec4899);border-radius:2px;width:50%;margin:0 auto 3px"></div>
+            </div>
+            <div style="padding:5px 7px">
+              <div style="height:2px;background:#fbcfe8;border-radius:1px;margin-bottom:2px"></div>
+              <div style="height:2px;background:#fce7f3;border-radius:1px;width:80%;margin-bottom:2px"></div>
+              <div style="height:1.5px;background:#fbcfe8;border-radius:1px;width:40%"></div>
+            </div>
+            <div style="text-align:center;font-size:9px;font-weight:700;color:#be185d;padding:3px;background:#fdf2f8;border-top:1px solid #fbcfe8">Rose Elegance</div>
+          </div>
+
+          <!-- 21. Golden Executive Boxed -->
+          <div class="layout-thumb" data-layout="layout-boxed lay-11" data-style="var-8" data-bg="#92400e" data-sec="#fef3c7" data-font="#1c1917" data-side="#ffffff" onclick="selectLayoutVisual(this,true)" style="cursor:pointer;border:2px solid #e2e8f0;border-radius:10px;background:#fff;overflow:hidden;transition:.2s;padding:0">
+            <div style="margin:4px;border:2px solid #92400e;border-radius:6px;overflow:hidden">
+              <div style="background:linear-gradient(135deg,#92400e,#d97706);padding:5px 7px;display:flex;align-items:center;gap:4px">
+                <div style="width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.3)"></div>
+                <div style="height:4px;background:rgba(255,255,255,.7);border-radius:2px;flex:1"></div>
+              </div>
+              <div style="padding:4px 6px;background:#fef3c7">
+                <div style="height:2px;background:#fde68a;border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:2px;background:#fcd34d;border-radius:1px;width:75%"></div>
+              </div>
+            </div>
+            <div style="text-align:center;font-size:9px;font-weight:700;color:#92400e;padding:3px;background:#fffbeb;border-top:1px solid #fde68a">Golden Exec</div>
+          </div>
+
+          <!-- 22. Indigo Lateral Esquerda -->
+          <div class="layout-thumb" data-layout="layout-side-left lay-12" data-style="var-4" data-bg="#4338ca" data-sec="#e0e7ff" data-font="#312e81" data-side="#ffffff" onclick="selectLayoutVisual(this,true)" style="cursor:pointer;border:2px solid #e2e8f0;border-radius:10px;background:#f5f3ff;overflow:hidden;transition:.2s;padding:0">
+            <div style="background:linear-gradient(135deg,#4338ca,#6366f1);height:20px;display:flex;align-items:center;padding:0 6px;gap:4px">
+              <div style="width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.3)"></div>
+              <div style="height:5px;background:rgba(255,255,255,.5);border-radius:2px;flex:1"></div>
+            </div>
+            <div style="display:flex;height:62px">
+              <div style="width:30%;background:#4338ca;padding:4px 3px">
+                <div style="height:2px;background:rgba(255,255,255,.4);border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:2px;background:rgba(255,255,255,.25);border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:2px;background:rgba(255,255,255,.3);border-radius:1px;width:70%"></div>
+              </div>
+              <div style="flex:1;padding:4px 5px">
+                <div style="height:2px;background:#c7d2fe;border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:2px;background:#e0e7ff;border-radius:1px;margin-bottom:2px;width:80%"></div>
+                <div style="height:2px;background:#c7d2fe;border-radius:1px;width:65%"></div>
+              </div>
+            </div>
+            <div style="text-align:center;font-size:9px;font-weight:700;color:#4338ca;padding:3px;background:#eef2ff;border-top:1px solid #c7d2fe">Indigo Pro</div>
+          </div>
+
+          <!-- 23. Crimson Artistic -->
+          <div class="layout-thumb" data-layout="layout-artistic lay-22" data-style="var-4" data-bg="#dc2626" data-sec="#fef2f2" data-font="#7f1d1d" data-side="#ffffff" onclick="selectLayoutVisual(this,true)" style="cursor:pointer;border:2px solid #e2e8f0;border-radius:10px;background:#fff;overflow:hidden;transition:.2s;padding:0">
+            <div style="display:flex;height:82px">
+              <div style="width:6px;background:linear-gradient(180deg,#dc2626,#f97316)"></div>
+              <div style="flex:1;padding:6px 7px">
+                <div style="font-size:9px;font-weight:900;color:#dc2626;margin-bottom:2px">NOME AQUI</div>
+                <div style="height:3px;background:#fecaca;border-radius:2px;margin-bottom:4px;width:65%"></div>
+                <div style="display:flex;gap:4px">
+                  <div style="flex:1"><div style="height:2px;background:#e2e8f0;border-radius:1px;margin-bottom:2px"></div><div style="height:2px;background:#e2e8f0;border-radius:1px;width:80%"></div></div>
+                  <div style="flex:1"><div style="height:2px;background:#fecaca;border-radius:1px;margin-bottom:2px"></div><div style="height:2px;background:#e2e8f0;border-radius:1px;width:70%"></div></div>
+                </div>
+              </div>
+            </div>
+            <div style="text-align:center;font-size:9px;font-weight:700;color:#dc2626;padding:3px;background:#fff5f5;border-top:1px solid #fecaca">Crimson Pro</div>
+          </div>
+
+          <!-- 24. Slate Dark Side Right -->
+          <div class="layout-thumb" data-layout="layout-side-right lay-14" data-style="var-8" data-bg="#1e293b" data-sec="#0f172a" data-font="#e2e8f0" data-side="#e2e8f0" onclick="selectLayoutVisual(this,true)" style="cursor:pointer;border:2px solid #e2e8f0;border-radius:10px;background:#0f172a;overflow:hidden;transition:.2s;padding:0">
+            <div style="background:linear-gradient(135deg,#1e293b,#334155);height:20px;display:flex;align-items:center;padding:0 6px;gap:4px">
+              <div style="width:12px;height:12px;border-radius:50%;background:rgba(148,163,184,.3)"></div>
+              <div style="height:4px;background:rgba(255,255,255,.35);border-radius:2px;flex:1"></div>
+            </div>
+            <div style="display:flex;height:62px;flex-direction:row-reverse">
+              <div style="width:30%;background:#334155;padding:4px 3px">
+                <div style="height:2px;background:rgba(148,163,184,.5);border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:2px;background:rgba(226,232,240,.2);border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:2px;background:rgba(148,163,184,.3);border-radius:1px;width:70%"></div>
+              </div>
+              <div style="flex:1;padding:4px 5px">
+                <div style="height:2px;background:rgba(226,232,240,.2);border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:2px;background:rgba(148,163,184,.15);border-radius:1px;width:80%"></div>
+              </div>
+            </div>
+            <div style="text-align:center;font-size:9px;font-weight:700;color:#94a3b8;padding:3px;background:#1e293b;border-top:1px solid rgba(148,163,184,.2)">Midnight Slate</div>
+          </div>
+        </div>
+
+        <select id="selLayout" onchange="render();saveData();" style="display:none;">
+          <option value="layout-classic lay-8">Clássico Padrão</option>
+          <option value="layout-side-left lay-12">Lateral Esquerda</option>
+          <option value="layout-side-right lay-14">Lateral Direita</option>
+          <option value="layout-geo lay-13">Geométrico</option>
+          <option value="layout-artistic lay-22">Artístico</option>
+          <option value="layout-minimal lay-26">Minimalista</option>
+          <option value="layout-boxed lay-11">Executivo Boxed</option>
+        </select>
+
+        <label>Estilo dos Títulos</label>
+        <select id="selStyle" onchange="render();saveData();">
+          <option value="var-0">0. Padrão (Sem linhas)</option>
+          <option value="var-1">1. Linha Simples Abaixo</option>
+          <option value="var-2">2. Título em Bloco Colorido</option>
+          <option value="var-3">3. Centralizado Simples</option>
+          <option value="var-4">4. Borda Lateral Esquerda</option>
+          <option value="var-5">5. Duas Linhas (Cima/Baixo)</option>
+          <option value="var-6">6. Itálico com Tracejado</option>
+          <option value="var-7">7. Sublinhado Grosso</option>
+          <option value="var-8">8. Degradê Elegante</option>
+          <option value="var-9">9. Espaçado Moderno</option>
+        </select>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px;">
+          <div><label class="no-top" style="color:var(--brand)">Tam. Títulos</label><input type="range" id="rngTitle" min="0.8" max="1.6" step="0.05" value="1" oninput="updateStyles()"></div>
+          <div><label class="no-top" style="color:var(--success)">Tam. Textos</label><input type="range" id="rngText" min="0.8" max="1.4" step="0.05" value="1" oninput="updateStyles()"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px;">
+          <div><label class="no-top">Margem (Página)</label><input type="range" id="rngMargin" min="20" max="80" value="40" oninput="updateStyles()"></div>
+          <div><label class="no-top">Espaço Blocos</label><input type="range" id="rngSpacing" min="5" max="35" value="15" oninput="updateStyles()"></div>
+        </div>
+
+        <label style="margin-top:20px;">Fonte do Documento</label>
+        <select id="selFontFamily" onchange="updateStyles()">
+          <option value="'Inter', sans-serif">Inter (Moderna)</option>
+          <option value="'Montserrat', sans-serif">Montserrat (Elegante)</option>
+          <option value="'Lato', sans-serif">Lato (Suave)</option>
+          <option value="'Playfair Display', serif">Playfair (Clássica Serifada)</option>
+          <option value="'Roboto Mono', monospace">Roboto Mono (Tech/Dev)</option>
+          <option value="'Nunito', sans-serif">Nunito (Arredondada)</option>
+          <option value="'Ubuntu', sans-serif">Ubuntu (Dinâmica)</option>
+          <option value="'Oswald', sans-serif">Oswald (Impactante)</option>
+          <option value="'Quicksand', sans-serif">Quicksand (Dinâmica/Startup)</option>
+          <option value="'Raleway', sans-serif">Raleway (Arrojada)</option>
+        </select>
+
+        <label style="margin-top:20px; border-top:1px solid var(--ui-border); padding-top:20px;">Paleta de Cores Customizada</label>
+        <div class="color-grid">
+          <div class="color-item"><label class="no-top">Destaque</label><input type="color" id="inpColor" value="#2563eb" oninput="updateStyles()"></div>
+          <div class="color-item"><label class="no-top">Lateral/Fundo</label><input type="color" id="inpSecColor" value="#f1f5f9" oninput="updateStyles()"></div>
+          <div class="color-item"><label class="no-top">Texto Main</label><input type="color" id="inpFontColor" value="#1e293b" oninput="updateStyles()"></div>
+          <div class="color-item"><label class="no-top">Texto Lateral</label><input type="color" id="inpSidebarColor" value="#ffffff" oninput="sidebarTextAuto=false;updateStyles()"></div>
+        </div>
+    </div>
+
+    <div class="wizard-footer">
+        <button class="btn-nav" id="btnPrev" onclick="navigateWizard(-1)">◀ Anterior</button>
+        <button class="btn-nav btn-nav-primary" id="btnNext" onclick="navigateWizard(1)">Próximo Passo ▶</button>
+    </div>
+
+    <button class="btn-clear-bottom" onclick="clearData()">🗑️ Limpar Tudo e Recomeçar</button>
+  </div>
+</aside>
+
+<div class="resizer no-print" id="resizer"></div>
+
+<main class="preview-area no-print no-copy" id="mainPreview">
+  <div class="preview-toolbar">
+    <div style="display:flex; align-items:center; gap: 8px; flex-wrap:wrap;">
+      <span class="preview-label">👁 Prévia A4</span>
+      <span id="pageLabel" style="font-size:11px;font-weight:700;color:var(--ui-muted);background:var(--ui-bg);padding:4px 8px;border-radius:6px;">Pág 1/1</span>
+      <span id="zoomLabel" style="font-size:11px;font-weight:700;color:var(--ui-muted);background:var(--ui-bg);padding:4px 8px;border-radius:6px;">100%</span>
+      <button class="preview-btn" onclick="zoomStep(-0.1)">➖ Zoom</button>
+      <button class="preview-btn" onclick="zoomStep(0.1)">➕ Zoom</button>
+      <button class="preview-btn btn-fit-screen" onclick="autoZoom()">⛶ Ajustar</button>
+      <button class="preview-btn" id="btnFullscreen" onclick="toggleFullscreenPreview()">⛶ Tela Cheia</button>
+      <button class="preview-btn" onclick="toggleCutEdit()" id="btnToggleCuts">✂️ Quebra</button>
+      <div style="display:flex; align-items:center; gap:8px; background: rgba(79,70,229,0.05); padding: 6px 12px; border-radius: 10px; border: 1px solid rgba(79,70,229,0.2);">
+        <span style="font-size:10px; font-weight:900; color:var(--brand); text-transform:uppercase;">Espaço Pág 2+:</span>
+        <input type="range" id="rngExtraCutMargin" min="0" max="150" value="0" style="width: 80px; height: 4px; margin: 0; cursor: pointer;" oninput="document.documentElement.style.setProperty('--extra-cut-margin', this.value + 'px')">
+      </div>
+    </div>
+    
+    <div style="display:flex;gap:12px; flex-wrap: wrap;">
+        <button class="preview-btn" style="background:var(--ui-bg); border-color:var(--ui-border); font-weight:900; color:var(--ui-txt); padding: 12px 20px;" onclick="exportPDFPreviewWatermark()">📥 BAIXAR PRÉVIA GRÁTIS</button>
+        <button class="btn-download" id="btnOfficialDownload" onclick="exportPDFOfficialProtected()">🔒 BAIXAR PDF OFICIAL</button>
+    </div>
+  </div>
+  
+  <div class="preview-canvas" id="canvasScroll" oncontextmenu="return false;" ondragstart="return false;" onselectstart="return false;">
+  <div class="kc-screenshot-guard" aria-hidden="true"></div> 
+    <div id="paperZoomWrap">
+      <div id="hiddenSpace" style="position: absolute; width: 0; height: 0; overflow: hidden; pointer-events: none; z-index: -999;">
+          <div id="hiddenPaper" style="width: 794px; background: #ffffff; position: relative;">
+                <div id="cvContentMaster" class="cv-content" style="height: max-content; min-height: 1123px;"></div>
+          </div>
+      </div>
+      <div id="pdfViewer" style="display: flex; flex-direction: column; gap: 30px; align-items: center; padding-bottom: 40px;">
+      </div>
+    </div>
+  </div>
+  
+</main>
+</div> </div>
+
+<div id="rouletteModal" class="roulette-modal" onclick="if(event.target===this)closeRoulette()">
+  <div class="roulette-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div style="font-size:18px;font-weight:900;color:var(--ui-txt);">🎰 ROLETA SURPREENDENTE</div>
+      <button onclick="closeRoulette()" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--ui-txt);line-height:1;">✕</button>
+    </div>
+    <div style="font-size:13px;color:var(--ui-muted);margin-bottom:20px;line-height:1.6;">Gire a roleta e descubra uma das <strong>100 variações</strong> exclusivas de design para o seu currículo!</div>
+    <div class="roulette-wheel-icon" id="rouletteWheelIcon">🎰</div>
+    <div class="roulette-num-display" id="rouletteNumDisplay">?</div>
+    <div style="font-size:13px;color:var(--ui-muted);margin:8px 0 16px;font-weight:600;" id="rouletteNameDisplay">Clique para girar!</div>
+    <div class="roulette-preview-stripe" id="roulettePreviewStripe"></div>
+    <div style="margin:8px 0 20px;" id="rouletteLayoutTag"></div>
+    <button class="btn-spin-main" id="btnSpinMain" onclick="spinRoulette()">🎰 GIRAR AGORA!</button>
+    <div style="font-size:12px;color:var(--ui-muted);margin-bottom:10px;">Últimas variações sorteadas:</div>
+    <div id="rouletteHistory" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;min-height:44px;"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// JAVASCRIPT CORE (IA, PDF, LOGICA E CPF)
+// ═══════════════════════════════════════════════════════════
+
+function getAILimit() { 
+    // Limite de 10 usos para assinantes, 3 para gratuitos.
+    let baseLimit = (totalDownloadsApi > 0) ? 10 : 3; 
+    if(!userEmail) return baseLimit; 
+    return Math.max(0, baseLimit - (parseInt(localStorage.getItem('kc_ai_usage_' + userEmail)) || 0)); 
+}
+
+function incrementAILimit() { 
+    if(!userEmail) return; 
+    let usage = parseInt(localStorage.getItem('kc_ai_usage_' + userEmail)) || 0; 
+    localStorage.setItem('kc_ai_usage_' + userEmail, usage + 1); 
+    updateAILimitUI(); 
+}
+
+function updateAILimitUI() { 
+    const badge = document.getElementById('aiUsageBadge'); 
+    if(badge) { 
+        let left = getAILimit(); 
+        badge.textContent = `Gerações IA: ${left} Restantes`; 
+        if(left <= 0) { 
+            badge.style.background = 'rgba(239, 68, 68, 0.15)'; badge.style.color = '#ef4444'; 
+        } else { 
+            badge.style.background = 'rgba(79, 70, 229, 0.15)'; badge.style.color = 'var(--brand)'; 
+        } 
+    } 
+}
+
+function handleAIError(j) {
+    let msg = j.msg || 'Erro na Inteligência Artificial. Tente novamente.';
+    if (j.http === 429 || (j.detail && (j.detail.toLowerCase().includes('quota') || j.detail.toLowerCase().includes('too many requests')))) {
+        msg = "Nossa Inteligência Artificial atingiu o limite de capacidade global. Por favor, tente novamente em algumas horas ou amanhã.";
+    }
+    toast(msg, 'error');
+}
+
+function showAILoading(title, sub) {
+    if(title) document.getElementById('aiLoadingTitle').innerText = title;
+    if(sub) document.getElementById('aiLoadingSub').innerText = sub;
+    document.getElementById('aiLoadingOverlay').style.display = 'flex';
+}
+function hideAILoading() {
+    document.getElementById('aiLoadingOverlay').style.display = 'none';
+}
+
+const $ = id => document.getElementById(id);
+const API_URL = 'api.php';
+
+let data = { 
+  exp: [{role:'', comp:'', period:'', desc:''},{role:'', comp:'', period:'', desc:''},{role:'', comp:'', period:'', desc:''}], 
+  edu: [] 
+};
+let profilePic = ''; let photoPos = 'left'; let currentScale = 1; let cutLines = []; let cutEditEnabled = true;
+let activeCutDrag = { on:false, pageIdx: -1, el:null, pageBox:null };
+let cropper = null; let saveTimer = null;
+let qrData = { active: false, phone: '55', size: 80, x: 650, y: 50, pos: 'foto', color: '#0f172a', border: true };
+
+let totalDownloadsApi = 0; let userEmail = ''; let userSenha = ''; let userNome  = ''; let userCpf   = ''; let userId = 0;   
+let currentStep = 1; let currentAiGender = 'H'; 
+
+let pixPollingTimer = null;
+let pixPollingCount = 0;
+
+const resizer = document.getElementById('resizer');
+const sidebar = document.getElementById('sidebar');
+let isResizingSidebar = false;
+
+if(resizer) {
+    resizer.addEventListener('mousedown', () => { isResizingSidebar = true; resizer.classList.add('active'); document.body.style.cursor = 'col-resize'; });
+    document.addEventListener('mousemove', (e) => {
+        if (!isResizingSidebar) return;
+        let newWidth = e.clientX;
+        if (newWidth > 350 && newWidth < (window.innerWidth - 400) && newWidth < 800) {
+            sidebar.style.width = newWidth + 'px'; sidebar.style.minWidth = newWidth + 'px'; autoZoom();
+        }
+    });
+    document.addEventListener('mouseup', () => { if(isResizingSidebar) { isResizingSidebar = false; resizer.classList.remove('active'); document.body.style.cursor = 'default'; } });
+}
+
+function goToStep(step) {
+    currentStep = step;
+    document.querySelectorAll('.w-step').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.step-pane').forEach(el => el.classList.remove('active'));
+    
+    const navBtn = $(`navStep${step}`);
+    if(navBtn) navBtn.classList.add('active');
+    
+    const pane = $(`paneStep${step}`);
+    if(pane) pane.classList.add('active');
+    
+    const btnPrev = $('btnPrev');
+    if(btnPrev) btnPrev.style.visibility = step === 1 ? 'hidden' : 'visible';
+    
+    const btnNext = $('btnNext');
+    if(btnNext) {
+        btnNext.innerHTML = step === 5 ? 'Finalizar e Ver Pronta' : 'Próximo Passo ▶';
+        btnNext.onclick = step === 5 ? () => {} : () => { navigateWizard(1); };
+    }
+    
+    if(window.innerWidth <= 1023) {
+      const sbContent = document.querySelector('.sidebar-content');
+      if(sbContent) sbContent.scrollTop = 0;
+    }
+}
+function navigateWizard(dir) { let newStep = currentStep + dir; if(newStep >= 1 && newStep <= 5) goToStep(newStep); }
+function toast(msg, type='info') { if (type === 'error') { alert('⚠️ ' + msg); } else if(type === 'success') { alert('✅ ' + msg); } else { alert('ℹ️ ' + msg); } }
+function closeModal(id) { $(id).classList.remove('open'); if(id==='imageModal'&&cropper){cropper.destroy();cropper=null;} }
+function openVideoModal() { $('videoModal').classList.add('open'); }
+function setAiGender(g) { currentAiGender = g; if($('inGender')) $('inGender').value = g; }
+
+function autoDetectGender(name) {
+    if(!name) return;
+    const firstName = name.trim().split(' ')[0].toLowerCase();
+    const femNames = ['maria','ana','julia','leticia','amanda','camila','bruna','jessica','fernanda','larissa','beatriz','patricia','aline','vanessa','carolina','juliana'];
+    const mascNames = ['jose','joao','pedro','gabriel','rafael','felipe','carlos','paulo','lucas','matheus','marcos','bruno','diego','guilherme'];
+    let detectedGender = 'O'; 
+    if(femNames.includes(firstName) || (firstName.endsWith('a') && !mascNames.includes(firstName))) { detectedGender = 'M'; } 
+    else if (mascNames.includes(firstName) || firstName.endsWith('o')) { detectedGender = 'H'; }
+    setAiGender(detectedGender);
+}
+
+// ── IMPORTAÇÃO MÁGICA (IA) ──
+async function handleResumeUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if(!userEmail || !userSenha){ toast('Faça login para usar a Leitura Inteligente com IA.', 'warning'); openStore(); event.target.value = ''; return; }
+    const limit = getAILimit();
+    if(limit <= 0) { toast('Seu limite de uso da IA acabou. Adquira mais créditos na loja.', 'error'); openStore(); event.target.value = ''; return; }
+
+    showAILoading('Lendo o arquivo...', 'Isso pode demorar alguns segundos');
+    const extension = file.name.split('.').pop().toLowerCase();
+    const reader = new FileReader();
+
+    reader.onload = async function(e) {
+        let rawText = '';
+        try {
+            if (extension === 'pdf') {
+                const typedarray = new Uint8Array(e.target.result);
+                const pdf = await pdfjsLib.getDocument(typedarray).promise;
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const content = await page.getTextContent();
+                    rawText += content.items.map(item => item.str).join(' ') + '\n';
+                }
+            } else if (extension === 'docx' || extension === 'doc') {
+                const result = await mammoth.extractRawText({arrayBuffer: e.target.result});
+                rawText = result.value;
+            } else { 
+                hideAILoading(); 
+                $('errorModal').classList.add('open'); 
+                return; 
+            }
+
+            if(!rawText || rawText.trim().length < 50) { 
+                hideAILoading(); 
+                $('errorModal').classList.add('open'); 
+                return; 
+            }
+            await processResumeWithAI(rawText);
+        } catch(err) { 
+            hideAILoading(); 
+            $('errorModal').classList.add('open'); 
+        }
+    };
+    reader.readAsArrayBuffer(file); event.target.value = ''; 
+}
+
+async function processResumeWithAI(text) {
+    showAILoading('Organizando os dados...', 'A IA está identificando suas experiências e habilidades.');
+    try {
+        const r = await fetch(API_URL, {
+            method: 'POST', headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ acao: 'ai_parse_resume', email: userEmail, senha: userSenha, texto: text })
+        });
+        const j = await r.json();
+        if (j.status !== 'sucesso') { 
+            hideAILoading();
+            $('errorModal').classList.add('open'); 
+            return; 
+        }
+
+        const d = j.result;
+        
+        if(d.nome) { $('inNome').value = d.nome; autoDetectGender(d.nome); }
+        if(d.email) $('inEmail').value = d.email;
+        if(d.telefone) $('inCel').value = d.telefone; 
+        if(d.linkedin) $('inLink').value = d.linkedin;
+        if(d.cidade || d.endereco) $('inRua').value = d.cidade || d.endereco; 
+        if(d.estado_civil) $('inEstadoCivil').value = d.estado_civil;
+        if(d.data_nascimento || d.nascimento) $('inNasc').value = d.data_nascimento || d.nascimento;
+        
+        if(d.objetivo) $('inObj').value = d.objetivo;
+        if(d.resumo) $('inRes').value = d.resumo;
+        if(d.habilidades) $('inSkills').value = Array.isArray(d.habilidades) ? d.habilidades.map(x=>'• '+x).join('\n') : d.habilidades;
+        if(d.idiomas) $('inIdiomas').value = Array.isArray(d.idiomas) ? d.idiomas.join('\n') : d.idiomas;
+        
+        if(d.experiencias && Array.isArray(d.experiencias) && d.experiencias.length > 0) {
+            data.exp = d.experiencias.map(e => ({ role: e.cargo || '', comp: e.empresa || '', period: e.periodo || '', desc: e.descricao || '' }));
+        }
+        if(d.formacao && Array.isArray(d.formacao) && d.formacao.length > 0) {
+            data.edu = d.formacao.map(e => ({ course: e.curso || '', inst: e.instituicao || '', period: e.periodo || '', desc: e.descricao || '' }));
+        }
+
+        renderLists(); render(); saveData(); incrementAILimit(); 
+        toast('✅ Currículo importado e organizado com sucesso!', 'success'); goToStep(1); 
+    } catch(e) { 
+        hideAILoading();
+        $('errorModal').classList.add('open'); 
+    } finally {
+        hideAILoading();
+    }
+}
+
+async function aiRealGenerate(){
+  try{
+    const experiencia = ($('aiExperience')?.value || '').trim();
+    const vaga = ($('aiTargetJob')?.value || '').trim();
+    if(!userEmail || !userSenha){ toast('Faça login em "Acesso/Conta" para usar a IA Real.', 'warning'); openStore(); return; }
+    const limit = getAILimit();
+    if(limit <= 0) { toast('Seu limite de uso da IA acabou. Adquira mais créditos na loja.', 'error'); openStore(); return; }
+    if(!experiencia || !vaga){ toast('Preencha sua experiência e a vaga-alvo nas caixas acima.', 'warning'); return; }
+    
+    showAILoading('Gerando Textos Conversivos...', 'A Inteligência Artificial está escrevendo seus resumos e habilidades.');
+
+    const r = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ acao:'ai_generate_texts', email:userEmail, senha:userSenha, experiencia, vaga }) });
+    const j = await r.json();
+    if(j.status !== 'sucesso'){ handleAIError(j); return; }
+
+    if(j.result.objetivo) $('inObj').value = j.result.objetivo;
+    if(j.result.resumo) $('inRes').value = j.result.resumo;
+    if(Array.isArray(j.result.skills)) $('inSkills').value = j.result.skills.map(x=>'• '+x.trim()).join('\n');
+    if(Array.isArray(j.result.bullets_experiencia)) $('aiBulletsOut').value = j.result.bullets_experiencia.map(x=>'• '+x.trim()).join('\n');
+
+    render(); saveData(); incrementAILimit(); toast('✅ Textos gerados com sucesso!', 'success');
+  } catch(e) { 
+      toast('Erro inesperado: verifique conexão.', 'error'); 
+  } finally {
+      hideAILoading();
+  }
+}
+
+function copyAIBullets(){
+  const t = $('aiBulletsOut')?.value || '';
+  if(!t.trim()){ toast('Gere os bullets na IA primeiro antes de copiar.', 'warning'); return; }
+  navigator.clipboard.writeText(t).then(()=>toast('Bullets copiados!', 'success'));
+}
+
+function applyAIBullets() {
+    const t = $('aiBulletsOut')?.value || '';
+    if(!t.trim()){ toast('Gere os bullets na IA primeiro antes de aplicar.', 'warning'); return; }
+    
+    const roleName = $('aiTargetJob').value.split('\n')[0].trim() || 'Nova Experiência';
+    
+    let applied = false;
+    for(let i=0; i<data.exp.length; i++) {
+        if(!data.exp[i].role.trim() && !data.exp[i].comp.trim() && !data.exp[i].desc.trim()) {
+            data.exp[i] = { role: roleName, comp: 'Preencha a Empresa', period: 'Período', desc: t.trim() };
+            applied = true;
+            break;
+        }
+    }
+    if(!applied) {
+        data.exp.push({ role: roleName, comp: 'Preencha a Empresa', period: 'Período', desc: t.trim() });
+    }
+    
+    renderLists(); render(); saveData();
+    toast('✅ Bullets aplicados nas suas Experiências!', 'success');
+    goToStep(4);
+}
+
+// ── TEMAS ──
+const themes = [
+  { name: "Clássico Executivo", layout: "layout-classic lay-8", style: "var-0", font: "'Inter', sans-serif", color: "#1e3a8a", sec: "#f8fafc", fontCol: "#0f172a", sideCol: "#ffffff" },
+  { name: "Moderno Lateral", layout: "layout-side-left lay-12", style: "var-1", font: "'Montserrat', sans-serif", color: "#0ea5e9", sec: "#0f172a", fontCol: "#334155", sideCol: "#f8fafc" },
+  { name: "Criativo Pink", layout: "layout-artistic lay-22", style: "var-2", font: "'Poppins', sans-serif", color: "#ec4899", sec: "#fdf2f8", fontCol: "#4c1d95", sideCol: "#ffffff" },
+  { name: "Geométrico Tech", layout: "layout-geo lay-13", style: "var-3", font: "'Roboto Mono', monospace", color: "#10b981", sec: "#1f2937", fontCol: "#f3f4f6", sideCol: "#ffffff" },
+  { name: "Minimalista Ouro", layout: "layout-minimal lay-26", style: "var-4", font: "'Playfair Display', serif", color: "#b45309", sec: "#fffbeb", fontCol: "#1c1917", sideCol: "#ffffff" },
+  { name: "Boxed Elegante", layout: "layout-boxed lay-11", style: "var-5", font: "'Lato', sans-serif", color: "#4f46e5", sec: "#ffffff", fontCol: "#0f172a", sideCol: "#ffffff" },
+  { name: "Dark Profissional", layout: "layout-side-right lay-14", style: "var-6", font: "'Ubuntu', sans-serif", color: "#f59e0b", sec: "#111827", fontCol: "#e5e7eb", sideCol: "#111827" },
+  { name: "Saúde Clean", layout: "layout-classic lay-8", style: "var-7", font: "'Nunito', sans-serif", color: "#14b8a6", sec: "#f0fdfa", fontCol: "#0f172a", sideCol: "#ffffff" },
+  { name: "Diretoria Premium", layout: "layout-side-left lay-12", style: "var-8", font: "'Merriweather', serif", color: "#0f172a", sec: "#e2e8f0", fontCol: "#1e293b", sideCol: "#0f172a" },
+  { name: "Design Arrojado", layout: "layout-artistic lay-22", style: "var-9", font: "'Oswald', sans-serif", color: "#ef4444", sec: "#fef2f2", fontCol: "#7f1d1d", sideCol: "#ffffff" },
+  { name: "Royal Blue", layout: "layout-boxed lay-11", style: "var-8", font: "'Playfair Display', serif", color: "#1d4ed8", sec: "#eff6ff", fontCol: "#1e3a8a", sideCol: "#ffffff" },
+  { name: "Moderno Esmeralda", layout: "layout-side-left lay-12", style: "var-1", font: "'Inter', sans-serif", color: "#047857", sec: "#064e3b", fontCol: "#065f46", sideCol: "#ecfdf5" },
+  { name: "Elegante Escuro", layout: "layout-side-right lay-14", style: "var-9", font: "'Montserrat', sans-serif", color: "#6366f1", sec: "#0f172a", fontCol: "#e2e8f0", sideCol: "#0f172a" },
+  { name: "Startup Vibe", layout: "layout-geo lay-13", style: "var-2", font: "'Quicksand', sans-serif", color: "#8b5cf6", sec: "#f5f3ff", fontCol: "#4c1d95", sideCol: "#ffffff" },
+  { name: "Navy Premium", layout: "layout-boxed lay-11", style: "var-8", font: "'Merriweather', serif", color: "#1e3a8a", sec: "#eff6ff", fontCol: "#0f172a", sideCol: "#ffffff" },
+  { name: "Rubi Elegante", layout: "layout-side-right lay-14", style: "var-9", font: "'Lato', sans-serif", color: "#9f1239", sec: "#fdf2f8", fontCol: "#1e293b", sideCol: "#ffffff" },
+  { name: "Minimalista Escuro", layout: "layout-side-left lay-12", style: "var-1", font: "'Inter', sans-serif", color: "#111827", sec: "#1f2937", fontCol: "#f3f4f6", sideCol: "#e5e7eb" },
+  { name: "Mod. Esmeralda Escuro", layout: "layout-geo lay-13", style: "var-2", font: "'Quicksand', sans-serif", color: "#065f46", sec: "#022c22", fontCol: "#ecfdf5", sideCol: "#ffffff" },
+  /* ── 10 NOVOS TEMAS — Combinações de 3 cores, fontes e pesos variados ── */
+  { name: "Konex Neon", layout: "layout-side-left lay-12", style: "var-1", font: "'Roboto Mono', monospace", color: "#00d4ff", sec: "#01040a", fontCol: "#b2ff00", sideCol: "#b2ff00", accent: "#b2ff00" },
+  { name: "Space Dark", layout: "layout-classic lay-8", style: "var-9", font: "'Montserrat', sans-serif", color: "#00d4ff", sec: "#030a1a", fontCol: "#f8fafc", sideCol: "#f8fafc", accent: "#06122d" },
+  { name: "Cyber Verde", layout: "layout-geo lay-13", style: "var-4", font: "'Oswald', sans-serif", color: "#b2ff00", sec: "#06122d", fontCol: "#f8fafc", sideCol: "#f8fafc", accent: "#00d4ff" },
+  { name: "Oceanic Blue", layout: "layout-boxed lay-11", style: "var-5", font: "'Poppins', sans-serif", color: "#0369a1", sec: "#e0f2fe", fontCol: "#0f172a", sideCol: "#ffffff", accent: "#14b8a6" },
+  { name: "Magenta Pop", layout: "layout-artistic lay-22", style: "var-2", font: "'Quicksand', sans-serif", color: "#d946ef", sec: "#1e1b4b", fontCol: "#f5f3ff", sideCol: "#fbbf24", accent: "#fbbf24" },
+  { name: "Forest Deep", layout: "layout-side-right lay-14", style: "var-7", font: "'Lato', sans-serif", color: "#166534", sec: "#f0fdf4", fontCol: "#14532d", sideCol: "#ffffff", accent: "#84cc16" },
+  { name: "Coral Sunset", layout: "layout-minimal lay-26", style: "var-3", font: "'Raleway', sans-serif", color: "#f43f5e", sec: "#fff1f2", fontCol: "#1c0a00", sideCol: "#ffffff", accent: "#f97316" },
+  { name: "Platinum Elite", layout: "layout-side-left lay-12", style: "var-8", font: "'Merriweather', serif", color: "#1e293b", sec: "#f1f5f9", fontCol: "#334155", sideCol: "#f8fafc", accent: "#94a3b8" },
+  { name: "Neon Pink Dark", layout: "layout-boxed lay-11", style: "var-9", font: "'Oswald', sans-serif", color: "#ec4899", sec: "#0f172a", fontCol: "#f1f5f9", sideCol: "#f1f5f9", accent: "#00d4ff" },
+  { name: "Galaxy Pro", layout: "layout-side-right lay-14", style: "var-1", font: "'Inter', sans-serif", color: "#7c3aed", sec: "#1e1b4b", fontCol: "#e0e7ff", sideCol: "#e0e7ff", accent: "#2563eb" }
+];
+
+function selectLayoutVisual(el, autoSideColor = false, forceBg = null) {
+  document.querySelectorAll('.layout-thumb').forEach(o => o.classList.remove('active'));
+  el.classList.add('active');
+  const layout = el.getAttribute('data-layout'); const style = el.getAttribute('data-style');
+  $('selLayout').value = layout; $('selStyle').value = style;
+  if(autoSideColor && el.getAttribute('data-bg')) {
+    $('inpColor').value = el.getAttribute('data-bg'); $('inpSecColor').value = el.getAttribute('data-sec'); $('inpFontColor').value = el.getAttribute('data-font'); $('inpSidebarColor').value = el.getAttribute('data-side');
+  } else if(forceBg) {
+    $('inpColor').value = forceBg; $('inpSecColor').value = el.getAttribute('data-sec') || forceBg; $('inpFontColor').value = el.getAttribute('data-font') || '#1e293b'; $('inpSidebarColor').value = '#ffffff';
+  }
+  updateStyles();
+}
+
+function renderThemeGrid() {
+  const grid = $('themeGridContainer'); let html = '';
+  themes.forEach((t, i) => {
+    const accent = t.accent || t.fontCol;
+    html += `<div class="theme-btn" onclick="applyThemeVariant(${i})">
+      <div class="theme-name">${t.name}</div>
+      <div class="theme-dots"><div class="theme-dot" style="background:${t.color}" title="Cor principal"></div><div class="theme-dot" style="background:${t.sec}" title="Lateral/Fundo"></div><div class="theme-dot" style="background:${accent}" title="Texto/Acento"></div></div>
+    </div>`;
+  });
+  grid.innerHTML = html;
+}
+
+function applyThemeVariant(index) {
+  const t = themes[index]; if(!t) return;
+  sidebarTextAuto = true;
+  $('selLayout').value = t.layout; $('selStyle').value = t.style; $('selFontFamily').value = t.font;
+  $('inpColor').value = t.color; $('inpSecColor').value = t.sec; $('inpFontColor').value = t.fontCol; $('inpSidebarColor').value = t.sideCol;
+  
+  $('inQRColor').value = t.color; qrData.color = t.color; 
+
+  enforceReadableColors(); updateStyles();
+}
+
+// ── ROLETA SURPREENDENTE ──
+const ROULETTE_VARS = (function() {
+  const layouts = [
+    'layout-classic lay-8', 'layout-side-left lay-12', 'layout-side-right lay-14',
+    'layout-geo lay-13', 'layout-artistic lay-22', 'layout-minimal lay-26', 'layout-boxed lay-11'
+  ];
+  const styles = ['var-1','var-2','var-3','var-4','var-5','var-6','var-7','var-8','var-9','var-0'];
+  const fonts = [
+    "'Inter', sans-serif", "'Montserrat', sans-serif", "'Lato', sans-serif",
+    "'Playfair Display', serif", "'Roboto Mono', monospace", "'Nunito', sans-serif",
+    "'Ubuntu', sans-serif", "'Oswald', sans-serif", "'Quicksand', sans-serif", "'Raleway', sans-serif"
+  ];
+  const palettes = [
+    { color:'#2563eb', sec:'#eff6ff', fontCol:'#1e3a8a', sideCol:'#ffffff' },
+    { color:'#7c3aed', sec:'#f5f3ff', fontCol:'#4c1d95', sideCol:'#ffffff' },
+    { color:'#ec4899', sec:'#fdf2f8', fontCol:'#831843', sideCol:'#ffffff' },
+    { color:'#0d9488', sec:'#f0fdfa', fontCol:'#134e4a', sideCol:'#ffffff' },
+    { color:'#dc2626', sec:'#fef2f2', fontCol:'#7f1d1d', sideCol:'#ffffff' },
+    { color:'#d97706', sec:'#fffbeb', fontCol:'#92400e', sideCol:'#ffffff' },
+    { color:'#059669', sec:'#ecfdf5', fontCol:'#064e3b', sideCol:'#ffffff' },
+    { color:'#1e3a8a', sec:'#eff6ff', fontCol:'#0f172a', sideCol:'#ffffff' },
+    { color:'#1e293b', sec:'#f1f5f9', fontCol:'#334155', sideCol:'#f8fafc' },
+    { color:'#00d4ff', sec:'#030a1a', fontCol:'#f8fafc', sideCol:'#b2ff00' }
+  ];
+  const vars = [];
+  for (let i = 0; i < 100; i++) {
+    const p = palettes[i % palettes.length];
+    vars.push({
+      layout: layouts[Math.floor(i / palettes.length) % layouts.length],
+      style: styles[(i + Math.floor(i / layouts.length)) % styles.length],
+      font: fonts[Math.floor(i / palettes.length) % fonts.length],
+      color: p.color, sec: p.sec, fontCol: p.fontCol, sideCol: p.sideCol
+    });
+  }
+  return vars;
+})();
+
+let rouletteHistory = [];
+let rouletteSpinning = false;
+
+function openRoulette() { $('rouletteModal').classList.add('open'); }
+function closeRoulette() { $('rouletteModal').classList.remove('open'); }
+
+function spinRoulette() {
+  if (rouletteSpinning) return;
+  rouletteSpinning = true;
+  const btn = $('btnSpinMain');
+  btn.disabled = true;
+  const wheel = $('rouletteWheelIcon');
+  const numDisplay = $('rouletteNumDisplay');
+  const nameDisplay = $('rouletteNameDisplay');
+  wheel.classList.add('is-spinning');
+  numDisplay.classList.remove('pop');
+  const targetIdx = Math.floor(Math.random() * 100);
+  let count = 0;
+  const total = 25 + Math.floor(Math.random() * 15);
+  const iv = setInterval(function() {
+    numDisplay.textContent = Math.floor(Math.random() * 100) + 1;
+    count++;
+    if (count >= total) {
+      clearInterval(iv);
+      wheel.classList.remove('is-spinning');
+      numDisplay.textContent = targetIdx + 1;
+      numDisplay.classList.add('pop');
+      setTimeout(function(){ numDisplay.classList.remove('pop'); }, 500);
+      const v = ROULETTE_VARS[targetIdx];
+      nameDisplay.textContent = '🎨 Variação #' + (targetIdx + 1);
+      const stripe = $('roulettePreviewStripe');
+      stripe.innerHTML = [v.color, v.sec, v.fontCol, v.sideCol].map(function(c){ return '<div class="roulette-preview-dot" style="background:' + c + '"></div>'; }).join('');
+      const layoutName = v.layout.split(' ')[0].replace('layout-','').replace(/-/g,' ').toUpperCase();
+      $('rouletteLayoutTag').innerHTML = '<span class="roulette-layout-tag" style="background:' + v.color + ';color:#fff">' + layoutName + '</span>';
+      applyRouletteVar(v);
+      rouletteHistory.unshift(targetIdx + 1);
+      if (rouletteHistory.length > 10) rouletteHistory.pop();
+      $('rouletteHistory').innerHTML = rouletteHistory.map(function(n){ return '<span class="roulette-hist-badge" onclick="applyRoulettePick(' + (n-1) + ')" title="Variação #' + n + '">' + n + '</span>'; }).join('');
+      btn.disabled = false;
+      rouletteSpinning = false;
+    }
+  }, 60);
+}
+
+function applyRouletteVar(v) {
+  $('selLayout').value = v.layout;
+  $('selStyle').value = v.style;
+  $('selFontFamily').value = v.font;
+  $('inpColor').value = v.color;
+  $('inpSecColor').value = v.sec;
+  $('inpFontColor').value = v.fontCol;
+  $('inpSidebarColor').value = v.sideCol;
+  sidebarTextAuto = false;
+  updateStyles();
+}
+
+function applyRoulettePick(idx) {
+  applyRouletteVar(ROULETTE_VARS[idx]);
+}
+
+function clamp(n,min,max){ return Math.max(min, Math.min(max,n)); }
+function hexToRgb(hex){
+  const h=(hex||'').replace('#','').trim();
+  if(h.length===3){ return {r:parseInt(h[0]+h[0],16), g:parseInt(h[1]+h[1],16), b:parseInt(h[2]+h[2],16)}; }
+  if(h.length!==6) return {r:0,g:0,b:0};
+  return {r:parseInt(h.slice(0,2),16), g:parseInt(h.slice(2,4),16), b:parseInt(h.slice(4,6),16)};
+}
+function luminance(hex){
+  const {r,g,b}=hexToRgb(hex);
+  const srgb=[r,g,b].map(v=>{ v/=255; return v<=0.03928 ? v/12.92 : ((v+0.055)/1.055)**2.4; });
+  return 0.2126*srgb[0]+0.7152*srgb[1]+0.0722*srgb[2];
+}
+function contrastRatio(a,b){
+  const L1=luminance(a), L2=luminance(b);
+  const hi=Math.max(L1,L2), lo=Math.min(L1,L2);
+  return (hi+0.05)/(lo+0.05);
+}
+let sidebarTextAuto = true;
+function bestTextOn(bg){ return contrastRatio(bg,'#0f172a') > contrastRatio(bg,'#ffffff') ? '#0f172a' : '#ffffff'; }
+function enforceReadableColors(){
+  if(bestTextOn('#ffffff') !== '#ffffff') $('inpFontColor').value = '#0f172a';
+  let sbBg = $('inpColor').value;
+  if($('selLayout').value.includes('layout-side-right')) sbBg = $('inpSecColor').value;
+  if(sidebarTextAuto) $('inpSidebarColor').value = bestTextOn(sbBg);
+  document.querySelector(':root').style.setProperty('--sidebar-text-color', $('inpSidebarColor').value);
+  document.querySelector(':root').style.setProperty('--user-font-color', $('inpFontColor').value);
+}
+
+// ── LOJA E PLANOS DINÂMICOS ──
+async function carregarPlanosLoja() {
+    const container = $('dynamicPlansContainer');
+    clearTimeout(pixPollingTimer);
+
+    const fallbackHTML = `
+        <div class="plan-card" onclick="buyPlan('basico', this)"><div class="plan-info"><div class="plan-name">Plano Básico <span class="plan-badge badge-basic">1 PDF</span></div><div class="plan-desc">Ideal para uso único.</div></div><div class="plan-price">R$ 9,90</div><button class="btn-buy-plan" style="background:var(--brand-grd);color:#fff;border:none;padding:10px 15px;border-radius:8px;font-weight:900;cursor:pointer">Comprar</button></div>
+        <div class="plan-card featured" onclick="buyPlan('profissional', this)"><div class="plan-info"><div class="plan-name">Profissional <span class="plan-badge badge-pro">3 PDFs</span></div><div class="plan-desc">Para criar versões diferentes.</div></div><div class="plan-price">R$ 19,90</div><button class="btn-buy-plan" style="background:var(--brand-grd);color:#fff;border:none;padding:10px 15px;border-radius:8px;font-weight:900;cursor:pointer">Comprar</button></div>
+        <div class="plan-card" onclick="buyPlan('agencia', this)"><div class="plan-info"><div class="plan-name">Agência <span class="plan-badge badge-agency">10 PDFs</span></div><div class="plan-desc">Múltiplos usos.</div></div><div class="plan-price">R$ 39,90</div><button class="btn-buy-plan" style="background:var(--brand-grd);color:#fff;border:none;padding:10px 15px;border-radius:8px;font-weight:900;cursor:pointer">Comprar</button></div>
+    `;
+    
+    try {
+        const r = await fetch(API_URL, { 
+            method: 'POST', 
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ acao: 'admin_get_configs' }) 
+        });
+        const j = await r.json();
+        
+        if (j.status === 'sucesso' && j.configs) {
+            const c = j.configs;
+            container.innerHTML = `
+                <div class="plan-card" onclick="buyPlan('basico', this)">
+                  <div class="plan-info"><div class="plan-name">${c.nome_plano_basico || 'Plano Básico'} <span class="plan-badge badge-basic">${c.creditos_basico || '1'} PDF</span></div><div class="plan-desc">${c.desc_plano_basico || 'Ideal para uso único e rápido.'}</div></div>
+                  <div class="plan-price">R$ ${parseFloat(c.valor_basico || 9.90).toFixed(2).replace('.', ',')}</div>
+                  <button class="btn-buy-plan" style="background:var(--brand-grd);color:#fff;border:none;padding:10px 15px;border-radius:8px;font-weight:900;cursor:pointer">Comprar</button>
+                </div>
+                <div class="plan-card featured" onclick="buyPlan('profissional', this)">
+                  <div class="plan-info"><div class="plan-name">${c.nome_plano_profissional || 'Profissional'} <span class="plan-badge badge-pro">${c.creditos_profissional || '3'} PDFs</span></div><div class="plan-desc">${c.desc_plano_profissional || 'Para criar versões diferentes.'}</div></div>
+                  <div class="plan-price">R$ ${parseFloat(c.valor_profissional || 19.90).toFixed(2).replace('.', ',')}</div>
+                  <button class="btn-buy-plan" style="background:var(--brand-grd);color:#fff;border:none;padding:10px 15px;border-radius:8px;font-weight:900;cursor:pointer">Comprar</button>
+                </div>
+                <div class="plan-card" onclick="buyPlan('agencia', this)">
+                  <div class="plan-info"><div class="plan-name">${c.nome_plano_agencia || 'Agência'} <span class="plan-badge badge-agency">${c.creditos_agencia || '10'} PDFs</span></div><div class="plan-desc">${c.desc_plano_agencia || 'Para quem atualiza com frequência.'}</div></div>
+                  <div class="plan-price">R$ ${parseFloat(c.valor_agencia || 39.90).toFixed(2).replace('.', ',')}</div>
+                  <button class="btn-buy-plan" style="background:var(--brand-grd);color:#fff;border:none;padding:10px 15px;border-radius:8px;font-weight:900;cursor:pointer">Comprar</button>
+                </div>
+            `;
+        } else { container.innerHTML = fallbackHTML; }
+    } catch(e) { container.innerHTML = fallbackHTML; }
+}
+
+function openStore() {
+  $('storeModal').classList.add('open');
+  if (userEmail) { 
+      $('authForms').style.display = 'none'; 
+      $('loggedInView').style.display = 'block'; 
+      $('storeCreditNum').textContent = totalDownloadsApi; 
+      if($('uCpf')) $('uCpf').value = userCpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+  } else { 
+      $('authForms').style.display = 'block'; 
+      $('loggedInView').style.display = 'none'; 
+  }
+}
+
+function switchStoreTab(tab) {
+  $('secAuth').style.display = tab === 'auth' ? 'block' : 'none'; 
+  $('secPlans').style.display = tab === 'plans' ? 'block' : 'none';
+  document.querySelectorAll('.s-tab').forEach(el => el.classList.remove('active'));
+  if(tab === 'auth') $('tabAuth').classList.add('active'); 
+  if(tab === 'plans') { $('tabPlans').classList.add('active'); carregarPlanosLoja(); }
+}
+
+function toggleLogReg(view) {
+  $('formLogin').style.display = view === 'login' ? 'block' : 'none'; $('formReg').style.display = view === 'reg' ? 'block' : 'none'; 
+  if(view === 'login' || view === 'reg') {
+      $('btnLog').style.background = view === 'login' ? 'var(--brand-grd)' : 'transparent'; $('btnLog').style.color = view === 'login' ? '#fff' : 'var(--ui-txt)';
+      $('btnReg').style.background = view === 'reg' ? 'var(--brand-grd)' : 'transparent'; $('btnReg').style.color = view === 'reg' ? '#fff' : 'var(--ui-txt)';
+  }
+}
+
+async function doAuth() {
+  const email = $('lEmail').value.trim(); const senha = $('lSenha').value.trim();
+  if (!email || !senha) { alert('⚠️ Preencha os dados de acesso.'); return;}
+  try {
+    const r = await fetch(API_URL, { 
+        method:'POST', 
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ acao:'validar', email, senha }) 
+    });
+    const j = await r.json();
+    if (j.status === 'sucesso') { 
+        userId = j.id || 0;
+        totalDownloadsApi = parseInt(j.creditos); 
+        userEmail = email; 
+        userSenha = senha; 
+        userCpf = j.cpf || '';
+        
+        localStorage.setItem('kx_email', email);
+        localStorage.setItem('kx_senha', senha);
+        
+        updateSidebarCredit(); initUserStatusBar(); updateAILimitUI(); saveData(); openStore(); 
+    } else { alert('⚠️ ' + j.msg); }
+  } catch(e) { alert('⚠️ Erro de conexão com o servidor. Verifique sua rede.'); }
+}
+
+async function doRegister() {
+  const nome = $('rNome').value.trim();
+  const email = $('rEmail').value.trim();
+  const senha = $('rSenha').value.trim();
+  const cpf = $('rCpf').value.replace(/\D/g, ''); 
+  const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+  if (!email || !regexEmail.test(email) || !senha || !nome) { 
+      alert('⚠️ Preencha os dados corretamente com um e-mail válido (ex: nome@gmail.com).'); 
+      return;
+  }
+  
+  try {
+    const r = await fetch(API_URL, { 
+        method:'POST', 
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ acao:'registrar', email, senha, nome, cpf }) 
+    });
+    const j = await r.json();
+    if (j.status === 'sucesso') { 
+        $('lEmail').value = email; $('lSenha').value = senha; doAuth(); 
+    } else { alert('⚠️ ' + j.msg); }
+  } catch(e) { alert('⚠️ Erro de conexão. Não foi possível falar com o servidor.'); }
+}
+
+async function updateCPF() {
+    const cpf = $('uCpf').value.replace(/\D/g, '');
+    if(cpf.length !== 11) { alert('⚠️ Digite um CPF válido (11 dígitos).'); return; }
+    if(!userId) {
+        await syncLicenseFromAPI();
+        if(!userId) { alert('⚠️ Sessão expirada. Faça login novamente na aba Acesso/Conta.'); return; }
+    }
+    try {
+        const r = await fetch(API_URL, {
+            method: 'POST', headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ acao: 'atualizar_cpf', user_id: userId, cpf: cpf })
+        });
+        const j = await r.json();
+        if(j.status === 'sucesso') { 
+            alert('✅ CPF salvo com sucesso! Agora você já pode gerar o seu pagamento.'); 
+            userCpf = cpf; 
+            saveData(); 
+        } else { alert('⚠️ ' + j.msg); }
+    } catch(e) { alert('⚠️ Erro ao salvar CPF no servidor.'); }
+}
+
+function logout() { 
+  userEmail = ''; userSenha = ''; userCpf = ''; userId = 0; totalDownloadsApi = 0; 
+  
+  localStorage.removeItem('kx_email');
+  localStorage.removeItem('kx_senha');
+  
+  updateSidebarCredit(); updateAILimitUI(); saveData(); openStore(); 
+}
+function appLogout() { if (!confirm('Deseja sair da conta?')) return; logout(); initUserStatusBar(); }
+
+function initUserStatusBar() {
+  const barLogged = $('userStatusBar'); const barNotLogged = $('userNotLoggedBar');
+  if (userEmail) { barLogged.style.display = 'flex'; barNotLogged.style.display = 'none'; $('appUserName').textContent = 'Usuário Logado'; $('appUserEmail').textContent = userEmail; } 
+  else { barLogged.style.display = 'none'; barNotLogged.style.display = 'flex'; }
+}
+
+function updateSidebarCredit() {
+  const badge = $('sidebarCreditBadge');
+  if (badge) badge.textContent = `Créditos: ${totalDownloadsApi}`;
+  updateDownloadButtonState();
+}
+
+function iniciarPollingPix(pid) {
+  pixPollingCount = 0;
+  clearTimeout(pixPollingTimer);
+  agendarPollPix(pid, 5000);
+}
+
+function agendarPollPix(pid, delay) {
+  pixPollingTimer = setTimeout(() => verificarPagamento(pid), delay);
+}
+
+async function verificarPagamento(pid) {
+  if (!pid) return;
+  pixPollingCount++;
+  try {
+    const res = await fetch(API_URL, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({acao:'verificar_pagamento', pedido_id: parseInt(pid)})
+    });
+    const json = await res.json();
+
+    if (json.status === 'aprovado') {
+      clearTimeout(pixPollingTimer);
+      await syncLicenseFromAPI();
+      alert('✅ Pagamento confirmado! Seus créditos foram liberados na conta e você já pode baixar o Currículo Oficial.');
+      carregarPlanosLoja(); 
+      switchStoreTab('auth');
+    } else if (json.status === 'pendente' || json.status === 'nao_encontrado') {
+      if (pixPollingCount < 120) {
+        agendarPollPix(pid, pixPollingCount < 20 ? 5000 : 8000);
+      }
+    }
+  } catch(e) {
+    if (pixPollingCount < 120) agendarPollPix(pid, 10000);
+  }
+}
+
+window.copyPixCode = function() {
+    const copyText = document.getElementById("pixCodeInput");
+    copyText.select();
+    document.execCommand("copy");
+    alert("✅ Código PIX Copiado! Cole no aplicativo do seu banco.");
+}
+
+async function buyPlan(plano, btnEl) {
+  if (!userEmail) { alert('⚠️ Faça login ou crie uma conta para comprar.'); switchStoreTab('auth'); return; }
+  
+  const textoOriginal = btnEl.innerText;
+  btnEl.style.opacity = '0.5';
+  btnEl.innerText = 'Gerando...';
+
+  try {
+    const r = await fetch(API_URL, { 
+        method: 'POST', 
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ acao: 'gerar_pagamento', email: userEmail, senha: userSenha, plano: plano }) 
+    });
+    
+    const text = await r.text();
+    let j;
+    try { j = JSON.parse(text); } catch(err) {
+        alert("⚠️ Ocorreu um erro interno no servidor (API falhou).");
+        btnEl.style.opacity = '1'; btnEl.innerText = textoOriginal;
+        return;
+    }
+
+    if (j.status === 'sucesso' && j.link) { 
+        window.open(j.link, '_blank'); 
+        
+        const container = $('dynamicPlansContainer');
+        container.innerHTML = `
+            <div style="text-align: center; padding: 30px 20px; background: var(--ui-panel); border-radius: 16px; border: 2px solid var(--brand); box-shadow: 0 10px 30px rgba(79,70,229,0.15); animation: fadeIn 0.3s ease;">
+                <h3 style="color: var(--brand); margin-bottom: 10px; font-weight: 900; font-size: 20px;">💳 Checkout Aberto</h3>
+                <p style="font-size: 14px; color: var(--ui-muted); margin-bottom: 20px;">Uma nova aba foi aberta com o Mercado Pago.</p>
+                <div style="background: linear-gradient(135deg, rgba(245,158,11,.1), rgba(217,119,6,.05)); color: #d97706; padding: 15px; border-radius: 12px; font-size: 13px; font-weight: 800; border: 1px solid rgba(245,158,11,.2);">
+                    ⏳ Aguardando a confirmação do pagamento...<br>Pode voltar para esta tela assim que pagar!
+                </div>
+                <button class="btn" style="margin-top: 20px; width: 100%; border: none; background: transparent; color: var(--ui-muted); text-decoration: underline;" onclick="carregarPlanosLoja()">Cancelar e voltar aos planos</button>
+            </div>
+        `;
+        iniciarPollingPix(j.pedido_id);
+    } 
+    else if (j.status === 'sucesso' && j.pix_copia_cola) {
+        const container = $('dynamicPlansContainer');
+        container.innerHTML = `
+            <div style="text-align: center; padding: 30px 20px; background: var(--ui-panel); border-radius: 16px; border: 2px solid var(--brand); box-shadow: 0 10px 30px rgba(79,70,229,0.15); animation: fadeIn 0.3s ease;">
+                <h3 style="color: var(--brand); margin-bottom: 10px; font-weight: 900; font-size: 20px;">✅ Pedido PIX Gerado!</h3>
+                <p style="font-size: 14px; color: var(--ui-muted); margin-bottom: 20px;">Escaneie o QR Code abaixo com o aplicativo do seu banco.</p>
+                
+                <div style="background: #fff; padding: 15px; display: inline-block; border-radius: 16px; border: 1px solid var(--ui-border); box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 20px;">
+                    <img src="data:image/jpeg;base64,${j.pix_qr_base64}" alt="QR Code PIX" style="width: 200px; height: 200px; display: block;">
+                </div>
+                
+                <p style="font-size: 13px; color: var(--ui-txt); font-weight: 700; margin-bottom: 10px;">Ou pague usando o código "Pix Copia e Cola":</p>
+                <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 25px;">
+                    <input type="text" id="pixCodeInput" value="${j.pix_copia_cola}" readonly style="flex: 1; padding: 14px; border-radius: 10px; border: 1px solid var(--brand); background: rgba(79,70,229,0.05); color: var(--ui-txt); font-size: 12px; text-align: center; outline: none; margin: 0;">
+                    <button class="btn" style="background: var(--brand-grd); color: #fff; border: none; padding: 0 20px; border-radius: 10px; font-weight: 900;" onclick="copyPixCode()">COPIAR</button>
+                </div>
+                
+                <div style="background: linear-gradient(135deg, rgba(245,158,11,.1), rgba(217,119,6,.05)); color: #d97706; padding: 15px; border-radius: 12px; font-size: 13px; font-weight: 800; border: 1px solid rgba(245,158,11,.2);">
+                    ⏳ Aguardando pagamento...<br>Os créditos cairão sozinhos assim que você pagar!
+                </div>
+                <button class="btn" style="margin-top: 20px; width: 100%; border: none; background: transparent; color: var(--ui-muted); text-decoration: underline;" onclick="carregarPlanosLoja()">Cancelar e voltar aos planos</button>
+            </div>
+        `;
+        iniciarPollingPix(j.pedido_id);
+    }
+    else { 
+        alert('⚠️ ' + (j.msg || 'Erro ao gerar pagamento.')); 
+        btnEl.style.opacity = '1'; 
+        btnEl.innerText = textoOriginal;
+    }
+  } catch (e) { 
+      alert('⚠️ Erro de rede/servidor ao processar o gateway.'); 
+      btnEl.style.opacity = '1'; 
+      btnEl.innerText = textoOriginal;
+  }
+}
+
+async function syncLicenseFromAPI() {
+  if (!userEmail || !userSenha) return false;
+  try {
+    const r = await fetch(API_URL, { 
+        method:'POST', 
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ acao:'verificar', email:userEmail, senha:userSenha }) 
+    });
+    const j = await r.json();
+    if (j.status === 'sucesso') { 
+        userId = j.id || 0;
+        userCpf = j.cpf || '';
+        totalDownloadsApi = parseInt(j.creditos); 
+        updateSidebarCredit(); updateAILimitUI(); saveData(); return true; 
+    } else {
+        logout();
+    }
+  } catch(e) { return false; }
+}
+
+function setPhotoPos(side) { photoPos = side; $('btnPosLeft').className = side === 'left' ? 'btn active' : 'btn'; $('btnPosRight').className = side === 'right' ? 'btn active' : 'btn'; render(); saveData(); }
+function initCropper(e) { const file = e.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = evt => { $('imageToCrop').src = evt.target.result; $('imageModal').classList.add('open'); if (cropper) cropper.destroy(); cropper = new Cropper($('imageToCrop'), { aspectRatio: 1, viewMode: 1 }); }; reader.readAsDataURL(file); }
+function saveCrop() { if (cropper) { profilePic = cropper.getCroppedCanvas({ width: 300, height: 300 }).toDataURL(); closeModal('imageModal'); render(); saveData(); } }
+function removePhoto() { profilePic = ''; $('inFoto').value=''; render(); saveData(); }
+
+function addExp() { data.exp.push({ role:'', comp:'', period:'', desc:''}); renderLists(); saveData();}
+function addEdu() { data.edu.push({ course:'', inst:'', period:'', desc:''}); renderLists(); saveData();}
+
+function renderLists() {
+  $('listExp').innerHTML = data.exp.map((e, i) => `<div class="exp-item"><input value="${(e.role||'').replace(/"/g,'&quot;')}" oninput="data.exp[${i}].role=this.value;render();saveData()" placeholder="Cargo / Função"><input value="${(e.comp||'').replace(/"/g,'&quot;')}" oninput="data.exp[${i}].comp=this.value;render();saveData()" placeholder="Empresa"><input value="${(e.period||'').replace(/"/g,'&quot;')}" oninput="data.exp[${i}].period=this.value;render();saveData()" placeholder="Período (Ex: 2020 - Atual)"><textarea oninput="data.exp[${i}].desc=this.value;render();saveData()" placeholder="Resumo das atividades...">${e.desc||''}</textarea><button class="btn-red" onclick="data.exp.splice(${i},1);renderLists();render();saveData()">Excluir</button></div>`).join('');
+  $('listEdu').innerHTML = data.edu.map((e, i) => `<div class="edu-item"><input value="${(e.course||'').replace(/"/g,'&quot;')}" oninput="data.edu[${i}].course=this.value;render();saveData()" placeholder="Curso / Formação"><input value="${(e.inst||'').replace(/"/g,'&quot;')}" oninput="data.edu[${i}].inst=this.value;render();saveData()" placeholder="Instituição"><input value="${(e.period||'').replace(/"/g,'&quot;')}" oninput="data.edu[${i}].period=this.value;render();saveData()" placeholder="Ano Conclusão"><textarea oninput="data.edu[${i}].desc=this.value;render();saveData()" placeholder="Detalhes (Opcional)">${e.desc||''}</textarea><button class="btn-red" onclick="data.edu.splice(${i},1);renderLists();render();saveData()">Excluir</button></div>`).join('');
+  render();
+}
+
+function updateStyles() {
+  enforceReadableColors();
+  const r = document.querySelector(':root');
+  r.style.setProperty('--user-font', $('selFontFamily').value);
+  r.style.setProperty('--user-color', $('inpColor').value);
+  r.style.setProperty('--secondary', $('inpSecColor').value);
+  r.style.setProperty('--user-font-color', $('inpFontColor').value);
+  r.style.setProperty('--sidebar-text-color', $('inpSidebarColor').value);
+  r.style.setProperty('--cv-margin', $('rngMargin').value + 'px');
+  r.style.setProperty('--cv-spacing', $('rngSpacing').value + 'px');
+  r.style.setProperty('--title-scale', $('rngTitle').value);
+  r.style.setProperty('--text-scale', $('rngText').value);
+  render(); saveData();
+}
+
+function kcClamp(n,min,max){ return Math.max(min, Math.min(max,n)); }
+function normalizeCutStarts(totalH, existingCuts){
+  const pageH=1123; const pages=Math.max(1, Math.ceil(totalH / pageH));
+  const cuts=(existingCuts||[]).map(v=>parseInt(v)).filter(v=>!isNaN(v)).sort((a,b)=>a-b);
+  const starts=[0]; const minGap=120;
+  for(let i=1;i<pages;i++){
+    const auto=i*pageH; const prevStart=starts[i-1]; const prevEnd=prevStart+pageH;
+    const minY=prevStart+minGap; const maxY=Math.min(auto, prevEnd);
+    const cands=cuts.filter(y=>y>=minY && y<=maxY); const chosen=cands.length ? cands[cands.length-1] : maxY;
+    starts.push(kcClamp(chosen, minY, maxY));
+  }
+  return starts;
+}
+function getCutStarts(){ return Array.isArray(window.__kcCutStarts) ? window.__kcCutStarts.slice() : []; }
+function setCutStarts(starts){ window.__kcCutStarts = (starts||[]).map(v=>parseInt(v)).filter(v=>!isNaN(v)); }
+
+function toggleCutEdit(){
+  cutEditEnabled = !cutEditEnabled;
+  const btn = $('btnToggleCuts');
+  if(btn) {
+      btn.style.background = cutEditEnabled ? 'rgba(239,68,68,.1)' : '';
+      btn.style.color = cutEditEnabled ? '#ef4444' : '';
+      btn.style.borderColor = cutEditEnabled ? '#ef4444' : '';
+  }
+  document.querySelectorAll('.kc-cut-line').forEach(el => {
+      el.style.display = cutEditEnabled ? 'block' : 'none';
+  });
+}
+function resetCuts(){ setCutStarts([]); cutLines = []; render(); saveData(); }
+function kcClientY(e){ return e.touches ? e.touches[0].clientY : e.clientY; }
+
+function applyCutsToDOM(normStarts){
+  const pages = Array.from($('pdfViewer').querySelectorAll('.page-box'));
+  for(let i=0;i<pages.length;i++){
+    const pageBox = pages[i]; const startY = normStarts[i] || 0;
+    const paper = Array.from(pageBox.children).find(el=>el.tagName==='DIV' && !el.classList.contains('kc-cut-line') && !el.classList.contains('kc-protect-overlay'));
+    if(paper) paper.style.top = `-${startY}px`;
+    if(i < pages.length-1){
+      const line = pageBox.querySelector('.kc-cut-line');
+      if(line){
+        let yWithin = kcClamp((normStarts[i+1] - startY), 120, 1123);
+        line.style.top = yWithin + 'px';
+        const blank = line._blankZone || pageBox.querySelector('.kc-cut-blank');
+        if(blank) blank.style.top = yWithin + 'px';
+      }
+    }
+  }
+}
+
+function startCutDrag(e, pageIdx, lineEl, pageBox){
+  if(!cutEditEnabled) return;
+  liveCutBaseStarts = (window.__kcPageStarts ? window.__kcPageStarts.slice() : []);
+  activeCutDrag = { on:true, pageIdx, el: lineEl, pageBox: pageBox };
+  e.preventDefault();
+}
+function moveActiveCut(clientY){
+  if(!activeCutDrag.on) return;
+  const rect = activeCutDrag.pageBox.getBoundingClientRect();
+  let y = kcClamp((clientY - rect.top) / (currentScale || 1), 120, 1123);
+  activeCutDrag.el.style.top = y + 'px';
+  scheduleLiveCutUpdate(activeCutDrag.pageIdx, y);
+}
+let liveCutPendingY = null; let liveCutRAF = null; let liveCutBaseStarts = [];
+function scheduleLiveCutUpdate(pageIdx, yWithin){
+  liveCutPendingY = yWithin;
+  if(liveCutRAF) return;
+  liveCutRAF = requestAnimationFrame(()=>{
+    liveCutRAF = null;
+    const cuts = getCutStarts();
+    const baseStart = (liveCutBaseStarts[pageIdx] != null) ? liveCutBaseStarts[pageIdx] : (pageIdx*1123);
+    cuts[pageIdx] = baseStart + (liveCutPendingY || 1123);
+    applyCutsToDOM(normalizeCutStarts($('cvContentMaster')?.offsetHeight || 1123, cuts));
+  });
+}
+document.addEventListener('mousemove', (e)=>{ if(activeCutDrag.on) moveActiveCut(kcClientY(e)); });
+document.addEventListener('touchmove', (e)=>{ if(activeCutDrag.on){ moveActiveCut(kcClientY(e)); e.preventDefault(); } }, {passive:false});
+document.addEventListener('mouseup', ()=>{
+  if(!activeCutDrag.on) return;
+  const pageIdx=activeCutDrag.pageIdx; const y=parseFloat(activeCutDrag.el.style.top)||1123;
+  activeCutDrag.on=false;
+  const starts = window.__kcPageStarts || normalizeCutStarts($('cvContentMaster')?.offsetHeight || 1123, getCutStarts());
+  if(starts[pageIdx+1] != null){
+    const cuts = getCutStarts(); cuts[pageIdx] = starts[pageIdx] + y;
+    const norm = normalizeCutStarts($('cvContentMaster')?.offsetHeight || 1123, cuts);
+    setCutStarts(norm.slice(1)); cutLines = norm.slice(1);
+  }
+  render(); saveData();
+});
+document.addEventListener('touchend', ()=>{ if(activeCutDrag.on){ document.dispatchEvent(new Event('mouseup')); } });
+
+// ── LÓGICA DE ARRASTAR O QR CODE ──
+let activeQRDrag = { on: false, el: null, masterEl: null, startX: 0, startY: 0, initX: 0, initY: 0 };
+
+function startQRDrag(e, el) {
+  if(e.type === 'touchstart') e = e.touches[0];
+  activeQRDrag.on = true;
+  activeQRDrag.el = el;
+  activeQRDrag.masterEl = $('drgQRCodeMaster');
+  activeQRDrag.startX = e.clientX;
+  activeQRDrag.startY = e.clientY;
+  activeQRDrag.initX = parseFloat(el.style.left) || qrData.x;
+  activeQRDrag.initY = parseFloat(el.style.top) || qrData.y;
+  e.preventDefault();
+}
+
+document.addEventListener('mousemove', (e) => {
+  if(activeQRDrag.on) {
+    let dx = (e.clientX - activeQRDrag.startX) / currentScale;
+    let dy = (e.clientY - activeQRDrag.startY) / currentScale;
+    let newX = activeQRDrag.initX + dx;
+    let newY = activeQRDrag.initY + dy;
+    
+    activeQRDrag.el.style.left = newX + 'px';
+    activeQRDrag.el.style.top = newY + 'px';
+    
+    if(activeQRDrag.masterEl) {
+      activeQRDrag.masterEl.style.left = newX + 'px';
+      activeQRDrag.masterEl.style.top = newY + 'px';
+    }
+  }
+});
+
+document.addEventListener('touchmove', (e) => {
+  if(activeQRDrag.on) {
+    let ev = e.touches[0];
+    let dx = (ev.clientX - activeQRDrag.startX) / currentScale;
+    let dy = (ev.clientY - activeQRDrag.startY) / currentScale;
+    let newX = activeQRDrag.initX + dx;
+    let newY = activeQRDrag.initY + dy;
+    
+    activeQRDrag.el.style.left = newX + 'px';
+    activeQRDrag.el.style.top = newY + 'px';
+    if(activeQRDrag.masterEl) {
+      activeQRDrag.masterEl.style.left = newX + 'px';
+      activeQRDrag.masterEl.style.top = newY + 'px';
+    }
+    e.preventDefault();
+  }
+}, {passive: false});
+
+document.addEventListener('mouseup', () => {
+  if(activeQRDrag.on) {
+    activeQRDrag.on = false;
+    qrData.x = parseFloat(activeQRDrag.el.style.left);
+    qrData.y = parseFloat(activeQRDrag.el.style.top);
+    saveData();
+  }
+});
+
+document.addEventListener('touchend', () => {
+  if(activeQRDrag.on) {
+    document.dispatchEvent(new Event('mouseup'));
+  }
+});
+
+function render() {
+  const masterContainer = $('cvContentMaster'); 
+  let layoutClass = $('selLayout').value; const varClass = $('selStyle').value;
+  if (photoPos === 'right') layoutClass += ' pos-right';
+  masterContainer.className = `cv-content ${layoutClass} palette-custom ${varClass}`;
+
+  const nome = ($('inNome').value || '').toUpperCase();
+  const objHTML = $('inObj').value ? `<div class="cv-role" style="text-transform:none;">${$('inObj').value}</div>` : ``;
+  const contato = [$('inEstadoCivil').value, $('inNasc').value ? 'Nasc: '+$('inNasc').value : '', $('inCel').value, $('inRecado').value ? 'Recado: '+$('inRecado').value : '', $('inEmail').value, $('inRua').value, $('inLink').value, $('selCNHCat').value ? 'CNH: '+$('selCNHCat').value + ($('inCNH').value ? ' - '+$('inCNH').value : '') : ''].filter(Boolean).join(' • ');
+
+  qrData.active = $('chkQR').checked; 
+  qrData.phone = $('inQRPhone').value; 
+  qrData.size = $('rngQRSize').value;
+  qrData.color = $('inQRColor').value; 
+  qrData.pos = $('selQRPos').value;    
+
+  $('qrConfig').style.display = qrData.active ? 'block' : 'none';
+  let qrHTML = '';
+  if(qrData.active && qrData.phone.length >= 10) {
+      const qrColorHex = qrData.color.replace('#', '');
+      const qrBorderStr = qrData.border ? `border: 2px solid ${qrData.color}; padding: 6px; border-radius: 12px; background: #ffffff;` : '';
+      const qrImgUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${qrData.size}x${qrData.size}&data=https://wa.me/${qrData.phone.replace(/\D/g,'')}&color=${qrColorHex}`;
+      qrHTML = `
+        <div style="display:flex; flex-direction:column; align-items:center; gap:4px; max-width: max-content; margin: 0 auto; user-select: none; pointer-events: none;">
+          <img src="${qrImgUrl}" alt="QR Code WhatsApp" style="width:${qrData.size}px; height:${qrData.size}px; ${qrBorderStr} box-sizing: border-box; display: block; object-fit: contain; box-shadow: 0 4px 10px rgba(0,0,0,0.06); pointer-events: none;">
+          <span style="font-size:9px; font-weight:900; text-transform:uppercase; letter-spacing:1px; color:var(--txt-main); margin-top: 2px; background: rgba(255,255,255,0.8); padding: 2px 6px; border-radius: 4px; pointer-events: none;">WhatsApp</span>
+        </div>
+      `;
+  }
+
+  const photoShape = $('selPhotoShape') ? $('selPhotoShape').value : '50%';
+  const photoSize = $('rngPhotoSize') ? $('rngPhotoSize').value : 90;
+  
+  const mediaHTML = (profilePic || (qrData.active && qrData.pos === 'foto' && qrHTML)) ? `<div style="display:flex; gap:15px; align-items:center; flex-shrink: 0;">${profilePic ? `<img src="${profilePic}" class="cv-photo" alt="Foto" style="width:${photoSize}px; height:${photoSize}px; border-radius:${photoShape}; object-fit:cover; border: 3px solid var(--prim); flex-shrink:0;">` : ''}${(qrData.active && qrData.pos === 'foto' && qrHTML) ? qrHTML : ''}</div>` : '';
+
+  const resHTML = $('inRes').value ? `<div class="section-title">Resumo Profissional</div><div class="item-desc" style="white-space:pre-wrap;">${$('inRes').value}</div>` : '';
+  const skillsHTML = $('inSkills').value ? `<div class="section-title">Habilidades</div><div class="item-desc" style="white-space:pre-wrap;">${$('inSkills').value}</div>` : '';
+  const idiomasHTML = $('inIdiomas').value ? `<div class="section-title">Idiomas</div><div class="item-desc" style="white-space:pre-wrap;">${$('inIdiomas').value}</div>` : '';
+  const infosHTML = $('inInfos').value ? `<div class="section-title">Informações Adicionais</div><div class="item-desc" style="white-space:pre-wrap;">${$('inInfos').value}</div>` : '';
+
+  const validExp = data.exp.filter(e => e.role.trim() || e.comp.trim() || e.period.trim() || e.desc.trim());
+  const expHTML = validExp.length > 0 ? `<div class="section-title">Experiência Profissional</div>` + validExp.map(e => `<div class="item-box"><div class="item-title">${e.role||''}</div><div class="item-sub">${e.comp||''}</div>${e.period?`<div class="item-meta"><b>Período:</b> ${e.period}</div>`:''}${e.desc?`<div class="item-desc" style="white-space:pre-wrap;">${e.desc}</div>`:''}</div>`).join('') : '';
+  
+  const validEdu = data.edu.filter(e => e.course.trim() || e.inst.trim() || e.period.trim() || e.desc.trim());
+  const eduHTML = validEdu.length > 0 ? `<div class="section-title">Formação Acadêmica</div>` + validEdu.map(e => `<div class="item-box"><div class="item-title">${e.course||''}</div><div class="item-sub">${e.inst||''}</div>${e.period?`<div class="item-meta"><b>Período:</b> ${e.period}</div>`:''}${e.desc?`<div class="item-desc" style="white-space:pre-wrap;">${e.desc}</div>`:''}</div>`).join('') : '';
+
+  const flexRev = (photoPos === 'right') ? 'flex-direction:row-reverse; text-align:right;' : '';
+  let html = `<div class="header" style="display:flex; gap:20px; align-items:center; padding-bottom:20px; margin-bottom:20px; border-bottom:2px solid var(--prim); ${flexRev}">${mediaHTML}<div style="flex:1;"><div class="cv-name">${nome}</div>${objHTML}<div class="cv-contact">${contato}</div></div></div>${resHTML}${expHTML}${eduHTML}${skillsHTML}${idiomasHTML}${infosHTML}`; 
+  if (layoutClass.includes('side')) { 
+      const sb = `<div class="sidebar-area">${mediaHTML}<div style="margin-top:20px"><div class="section-title" style="margin-top:0;">Contato</div><div class="cv-contact" style="color:var(--sidebar-text-color);">${contato.replace(/ • /g,'<br><br>')}</div><div style="color:var(--sidebar-text-color);">${skillsHTML}${idiomasHTML}${infosHTML}</div></div></div>`; 
+      const ma = `<div class="main-area"><div class="cv-name">${nome}</div>${objHTML}${resHTML}${expHTML}${eduHTML}</div>`; 
+      html = (layoutClass.includes('left') && photoPos==='right') || (layoutClass.includes('right') && photoPos!=='right') ? ma + sb : sb + ma; 
+  } else if (layoutClass.includes('layout-artistic')) { 
+      html = `<div class="side-strip"></div><div class="main-body"><div class="header-art" style="display:flex; align-items:flex-end; padding-bottom:20px; margin-bottom:var(--cv-spacing); border-bottom:4px solid var(--prim); ${flexRev}"><div class="big-letter" style="${photoPos==='right'?'margin-left:10px;':'margin-right:10px;'}">${(nome.charAt(0)||"")}</div><div style="flex:1"><div class="name-art" style="font-size:calc(2.2em * var(--title-scale)); font-weight:900; line-height:1.1; margin-bottom:.2em; text-transform:uppercase; color:var(--txt-h);">${nome}</div>${objHTML}<div style="font-size:10px;margin-top:5px;color:var(--txt-main);opacity:.8">${contato}</div></div>${mediaHTML?`<div style="${photoPos==='right'?'margin-right:20px;':'margin-left:20px;'}">${mediaHTML}</div>`:''}</div><div style="display:flex;gap:30px"><div style="flex:1;min-width:0">${resHTML}${expHTML}</div><div style="flex:1;min-width:0">${eduHTML}${skillsHTML}${idiomasHTML}${infosHTML}</div></div></div>`; 
+  } else if (layoutClass.includes('layout-geo')) { 
+      html = `<div class="header-bg" style="display:flex; gap:20px; align-items:center; ${flexRev}">${mediaHTML}<div style="flex:1;"><div class="cv-name">${nome}</div><div class="cv-contact">${contato}</div></div></div><div class="main-content">${resHTML}<div style="display:flex;gap:20px;margin-top:20px"><div style="flex:1;min-width:0">${expHTML}</div><div style="flex:1;min-width:0">${eduHTML}${skillsHTML}${idiomasHTML}${infosHTML}</div></div></div>`; 
+  } else if (layoutClass.includes('layout-boxed')) { 
+      html = `<div class="inner-border"><div class="header" style="display:flex; gap:20px; align-items:center; padding-bottom:20px; margin-bottom:20px; border-bottom:4px solid var(--prim); ${flexRev}">${mediaHTML}<div style="flex:1;"><div class="cv-name">${nome}</div><div class="cv-contact">${contato}</div></div></div>${resHTML}${expHTML}${eduHTML}${skillsHTML}${idiomasHTML}${infosHTML}</div>`; 
+  } else if (layoutClass.includes('layout-minimal')) { 
+      html = `<div class="header" style="display:flex; flex-direction:column; gap:20px; align-items:center; justify-content:center; text-align:center; padding-bottom:20px; margin-bottom:30px; border-bottom:1px solid rgba(0,0,0,0.1);">${mediaHTML}<div style="flex:1;"><div class="cv-name">${nome}</div>${objHTML}<div class="cv-contact">${contato}</div></div></div>${resHTML}${expHTML}${eduHTML}${skillsHTML}${idiomasHTML}${infosHTML}</div>`; 
+  }
+  
+  masterContainer.innerHTML = html;
+  
+  const hiddenPaper = $('hiddenPaper');
+  const oldQR = $('drgQRCodeMaster'); if(oldQR) oldQR.remove();
+
+  if(qrData.active && qrData.phone.length >= 10 && qrData.pos === 'flutuante') {
+      const wrap = document.createElement('div'); wrap.id = 'drgQRCodeMaster'; wrap.className = 'qr-drag'; 
+      wrap.style.position = 'absolute'; wrap.style.left = qrData.x + 'px'; wrap.style.top = qrData.y + 'px'; 
+      wrap.style.cursor = 'move'; wrap.style.zIndex = '999'; wrap.innerHTML = qrHTML; 
+      hiddenPaper.appendChild(wrap);
+  }
+
+  const viewer = $('pdfViewer'); viewer.innerHTML = '';
+  const totalHeight = masterContainer.offsetHeight;
+  const normStarts = normalizeCutStarts(totalHeight, Array.isArray(cutLines) ? cutLines : getCutStarts());
+  window.__kcPageStarts = normStarts.slice();
+  setCutStarts(normStarts.slice(1)); cutLines = normStarts.slice(1);
+  const numPages = Math.max(1, normStarts.length);
+
+  for(let i = 0; i < numPages; i++) {
+      const pageBox = document.createElement('div');
+      pageBox.className = 'page-box'; pageBox.style.width = '794px'; pageBox.style.height = '1123px'; pageBox.style.overflow = 'hidden'; pageBox.style.position = 'relative'; pageBox.style.background = '#ffffff'; pageBox.style.marginBottom = i < numPages - 1 ? '30px' : '0'; pageBox.style.boxShadow = '0 12px 40px rgba(0,0,0,0.1)';
+
+      const clone = hiddenPaper.cloneNode(true); clone.id = ''; clone.style.position = 'absolute'; clone.style.top = `-${normStarts[i] || 0}px`; clone.style.left = '0'; clone.style.width = '794px';
+      
+      const qrClones = clone.querySelectorAll('.qr-drag');
+      qrClones.forEach(qrc => {
+          qrc.addEventListener('mousedown', (e) => startQRDrag(e, qrc));
+          qrc.addEventListener('touchstart', (e) => startQRDrag(e, qrc), {passive:false});
+      });
+
+      const protectOverlay = document.createElement('div');
+      protectOverlay.className = 'kc-protect-overlay';
+      const svgUri = encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="350" height="250"><text x="10" y="120" transform="rotate(-35 150 120)" font-family="sans-serif" font-size="40" font-weight="900" fill="rgba(150,150,150,0.18)">PRÉVIA - NÃO PAGO</text><text x="10" y="160" transform="rotate(-35 150 160)" font-family="sans-serif" font-size="22" font-weight="900" fill="rgba(150,150,150,0.15)">USO INVÁLIDO</text></svg>');
+      protectOverlay.style.cssText = `position:absolute;inset:0;z-index:200;pointer-events:none;background-image:url("data:image/svg+xml;charset=utf-8,${svgUri}");`;
+
+      if(i < numPages - 1){
+        const yWithin = kcClamp((normStarts[i+1] - (normStarts[i] || 0)), 120, 1123);
+        const blankZone = document.createElement('div'); blankZone.className = 'kc-cut-blank'; blankZone.style.top = yWithin + 'px'; blankZone.innerHTML = '<span class="kc-cut-blank-label">▼ ÁREA DA PRÓXIMA PÁGINA</span>'; pageBox.appendChild(blankZone);
+        const cutLine = document.createElement('div'); cutLine.className = 'kc-cut-line' + (cutEditEnabled ? '' : ' locked'); cutLine.style.top = yWithin + 'px';
+        cutLine.style.display = cutEditEnabled ? 'block' : 'none';
+        const dragZone = document.createElement('div'); dragZone.className = 'kc-cut-drag-zone';
+        const ruler = document.createElement('div'); ruler.className = 'kc-cut-ruler'; dragZone.appendChild(ruler);
+        dragZone.innerHTML += `<span class="kc-cut-badge">PÁG ${i+1} → ${i+2}</span><span class="kc-cut-handle">✂️ Arraste a quebra</span>`;
+        dragZone.addEventListener('mousedown', (e)=>{ if(!cutEditEnabled) return; startCutDrag(e, i, cutLine, pageBox); });
+        dragZone.addEventListener('touchstart', (e)=>{ if(!cutEditEnabled) return; startCutDrag(e, i, cutLine, pageBox); }, {passive:false});
+        cutLine.appendChild(dragZone); pageBox.appendChild(cutLine); cutLine._blankZone = blankZone;
+      }
+      pageBox.appendChild(clone); 
+      pageBox.appendChild(protectOverlay); 
+      viewer.appendChild(pageBox);
+  }
+  updateDownloadButtonState();
+  updatePageIndicator();
+}
+
+function saveData() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    cutLines = getCutStarts();
+    const payload = {
+      nome: $('inNome').value, cel: $('inCel').value, recado: $('inRecado').value, nasc: $('inNasc').value, email: $('inEmail').value, rua: $('inRua').value, link: $('inLink').value, cnh: $('inCNH').value, cnhCat: $('selCNHCat').value, estadoCivil: $('inEstadoCivil').value, obj: $('inObj').value, res: $('inRes').value, skills: $('inSkills').value, idiomas: $('inIdiomas').value, infos: $('inInfos').value,
+      layout: $('selLayout').value, style: $('selStyle').value, margin: $('rngMargin').value, spacing: $('rngSpacing').value, titleScale: $('rngTitle').value, textScale: $('rngText').value,
+      exp: data.exp, edu: data.edu, pic: profilePic, photoPos: photoPos, fontFamily: $('selFontFamily').value, userColor: $('inpColor').value, secColor: $('inpSecColor').value, userFontColor: $('inpFontColor').value, sidebarColor: $('inpSidebarColor').value, userEmail: userEmail, userSenha: userSenha, userNome: userNome, userCpf: userCpf, userId: userId, cutLines: cutLines, qrData: qrData, currentStep: currentStep, currentAiGender: currentAiGender,
+      photoShape: $('selPhotoShape') ? $('selPhotoShape').value : '50%', photoSize: $('rngPhotoSize') ? $('rngPhotoSize').value : 90
+    };
+    localStorage.setItem('konexData_FINAL3', JSON.stringify(payload));
+  }, 500);
+}
+
+function loadData() {
+  const saved = JSON.parse(localStorage.getItem('konexData_FINAL3'));
+  
+  userEmail = localStorage.getItem('kx_email') || (saved ? saved.userEmail : '');
+  userSenha = localStorage.getItem('kx_senha') || (saved ? saved.userSenha : '');
+
+  if (!saved) { 
+    cutLines = []; setCutStarts([]); goToStep(1); setTimeout(updateDownloadButtonState, 300); 
+    // Iniciar sempre com 3 campos vazios
+    data.exp = [{role:'', comp:'', period:'', desc:''},{role:'', comp:'', period:'', desc:''},{role:'', comp:'', period:'', desc:''}];
+    try { renderLists(); updateStyles(); } catch(e){} 
+    return; 
+  }
+
+  $('inNome').value = saved.nome||''; $('inCel').value = saved.cel||''; $('inRecado').value = saved.recado||''; $('inNasc').value = saved.nasc||''; $('inEstadoCivil').value = saved.estadoCivil||''; $('inEmail').value = saved.email||''; $('inRua').value = saved.rua||''; $('inLink').value = saved.link||''; $('inCNH').value = saved.cnh||''; $('selCNHCat').value = saved.cnhCat||''; $('inObj').value = saved.obj||''; $('inRes').value = saved.res||''; $('inSkills').value = saved.skills||''; $('inIdiomas').value = saved.idiomas||''; $('inInfos').value = saved.infos||'';
+  if (saved.layout) $('selLayout').value = saved.layout; if (saved.style) $('selStyle').value = saved.style; if (saved.margin) $('rngMargin').value = saved.margin; if (saved.spacing) $('rngSpacing').value = saved.spacing;
+  data.exp = saved.exp || []; data.edu = saved.edu || []; profilePic = saved.pic || '';
+  if (saved.fontFamily) $('selFontFamily').value = saved.fontFamily; if (saved.userColor) $('inpColor').value = saved.userColor; if (saved.secColor) $('inpSecColor').value = saved.secColor; if (saved.userFontColor) $('inpFontColor').value = saved.userFontColor; if (saved.sidebarColor) $('inpSidebarColor').value = saved.sidebarColor;
+  if (saved.photoPos) setPhotoPos(saved.photoPos);
+  
+  if (saved.photoShape && $('selPhotoShape')) $('selPhotoShape').value = saved.photoShape;
+  if (saved.photoSize && $('rngPhotoSize')) $('rngPhotoSize').value = saved.photoSize;
+
+  if (saved.qrData) { qrData = { active: false, phone: '55', size: 80, x: 650, y: 50, pos: 'foto', color: '#0f172a', border: true, ...saved.qrData }; $('chkQR').checked = qrData.active; $('inQRPhone').value = qrData.phone; $('rngQRSize').value = qrData.size; $('inQRColor').value = qrData.color; }
+  if (saved.currentAiGender) { setAiGender(saved.currentAiGender); }
+  
+  userNome = saved.userNome || ''; userCpf = saved.userCpf || ''; userId = saved.userId || 0;
+  
+  if (Array.isArray(saved.cutLines)) { cutLines = saved.cutLines; setCutStarts(saved.cutLines); }
+  if (userEmail && userSenha) syncLicenseFromAPI();
+  initUserStatusBar(); updateAILimitUI(); goToStep(saved.currentStep || 1); renderLists(); updateStyles(); setTimeout(updateDownloadButtonState, 300);
+}
+
+function clearData(silent=false) { 
+  if (silent || confirm('⚠️ Apagar currículo inteiro?')) { 
+    localStorage.removeItem('konexData_FINAL3'); 
+    data = { exp: [{role:'', comp:'', period:'', desc:''},{role:'', comp:'', period:'', desc:''},{role:'', comp:'', period:'', desc:''}], edu: [] }; 
+    profilePic = ''; qrData.active = false; $('chkQR').checked = false;
+    document.querySelectorAll('input:not([type="color"]):not([type="range"]), textarea').forEach(el => el.value = ''); 
+    goToStep(1); renderLists(); render(); saveData(); 
+  } 
+}
+
+async function generateVisualPDF(filename) {
+  const overlay = $('exportOverlay'); overlay.style.display = 'flex'; 
+  try {
+    const originalScale = currentScale;
+    setZoom(1); 
+    await new Promise(r => setTimeout(r, 300)); 
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF('p', 'mm', 'a4'); 
+    const pages = document.querySelectorAll('.page-box');
+    
+    const hideElements = document.querySelectorAll('.kc-protect-overlay, .kc-cut-line, .kc-cut-blank');
+    hideElements.forEach(o => o.style.display = 'none');
+    
+    for(let i = 0; i < pages.length; i++) {
+        const canvas = await html2canvas(pages[i], { scale: 3, useCORS: true, width: 794, height: 1123, logging: false });
+        const imgData = canvas.toDataURL('image/jpeg', 1.0); 
+        if(i > 0) pdf.addPage();
+        pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+    }
+    
+    pdf.save(filename);
+    
+    hideElements.forEach(o => o.style.display = ''); 
+    setZoom(originalScale);
+  } catch(e) { alert('⚠️ Erro ao gerar PDF Oficial.'); } finally { overlay.style.display = 'none'; autoZoom(); }
+}
+
+async function exportPDFPreviewWatermark() {
+  const overlay = $('exportOverlay'); overlay.style.display = 'flex'; $('exportTitleText').innerText = "Gerando Prévia...";
+  try {
+    const originalScale = currentScale;
+    setZoom(1);
+    await new Promise(r => setTimeout(r, 300));
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF('p', 'mm', 'a4'); 
+    const pages = document.querySelectorAll('.page-box');
+    
+    const hideElements = document.querySelectorAll('.kc-protect-overlay, .kc-cut-line, .kc-cut-blank');
+    hideElements.forEach(o => o.style.display = 'none');
+
+    for(let i = 0; i < pages.length; i++) {
+        const canvas = await html2canvas(pages[i], { scale: 2, useCORS: true, width: 794, height: 1123, logging: false });
+        const imgData = canvas.toDataURL('image/jpeg', 0.8); 
+        if(i > 0) pdf.addPage();
+        pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+
+        pdf.saveGraphicsState();
+        try { if (pdf.GState) { pdf.setGState(new pdf.GState({opacity: 0.25})); } } catch(e) {}
+        
+        pdf.setFont('helvetica', 'bold'); 
+        pdf.setTextColor(120, 120, 120); 
+        
+        for(let x = -50; x < 250; x += 100) {
+            for(let y = -20; y < 350; y += 50) {
+                pdf.setFontSize(26);
+                pdf.text("PRÉVIA - NÃO PAGO", x, y, { angle: 30 });
+            }
+        }
+        pdf.restoreGraphicsState();
+    }
+    
+    pdf.save('Curriculo_Previa_Konex.pdf');
+    
+    hideElements.forEach(o => o.style.display = '');
+    setZoom(originalScale);
+  } catch(e) { alert('⚠️ Erro ao gerar prévia.'); } finally { overlay.style.display = 'none'; $('exportTitleText').innerText = "Renderizando PDF..."; autoZoom(); }
+}
+
+async function exportPDFOfficialProtected() {
+  if (!userEmail) { alert('🔒 Faça login e adquira créditos para baixar o PDF Oficial limpo.'); openStore(); return; }
+  if (totalDownloadsApi <= 0) {
+    const btn = $('btnOfficialDownload'); if (btn) btn.classList.add('btn-download-locked');
+    alert('🔒 Você precisa de créditos para baixar o PDF Oficial limpo. Redirecionando para a Loja...');
+    setTimeout(() => { openStore(); if (btn) btn.classList.remove('btn-download-locked'); }, 1500); return;
+  }
+  if (!confirm(`⚠️ Baixar o PDF OFICIAL consumirá 1 crédito.\nSeu saldo atual é: ${totalDownloadsApi}\n\nDeseja continuar?`)) return;
+  try {
+    const r = await fetch(API_URL, { 
+        method:'POST', 
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({acao:'consumir', email:userEmail, senha:userSenha}) 
+    }); 
+    const j = await r.json();
+    if (j.status === 'sucesso') { 
+        totalDownloadsApi = parseInt(j.creditos); 
+        updateSidebarCredit(); 
+        await generateVisualPDF(`Curriculo_Oficial_${$('inNome').value.replace(/[^a-zA-Z0-9]/g,'_') || 'Konex'}.pdf`); 
+    } 
+    else { alert('⚠️ Falha ao validar o seu crédito: ' + j.msg); }
+  } catch(e) { alert('⚠️ Erro de servidor ao gerar PDF.'); }
+}
+
+function updateDownloadButtonState() {
+  const btn = $('btnOfficialDownload'); if (!btn) return;
+  if (totalDownloadsApi > 0 && userEmail) { btn.innerHTML = `✅ BAIXAR PDF OFICIAL (${totalDownloadsApi})`; btn.classList.remove('btn-download-locked'); } 
+  else { btn.innerHTML = '🔒 PDF OFICIAL — COMPRAR CRÉDITO'; btn.classList.add('btn-download-locked'); }
+}
+
+function updatePageIndicator() {
+  const el = $('pageLabel'); const sc = $('canvasScroll'); const viewer = $('pdfViewer');
+  if (!el || !sc || !viewer) return;
+  const pages = Array.from(viewer.querySelectorAll('.page-box'));
+  const total = pages.length || 1;
+  const scRect = sc.getBoundingClientRect();
+  let bestIdx = 0; let bestDist = Infinity;
+  pages.forEach((pg, i) => {
+    const r = pg.getBoundingClientRect(); const dist = Math.abs(r.top - scRect.top);
+    if (dist < bestDist) { bestDist = dist; bestIdx = i; }
+  });
+  if(el) el.textContent = `Pág ${bestIdx+1}/${total}`;
+}
+
+function toggleFullscreenPreview() {
+  const target = $('mainPreview') || document.documentElement; const btn = $('btnFullscreen');
+  const isFs = document.fullscreenElement;
+  if (!isFs) { if (target.requestFullscreen) target.requestFullscreen(); } else { if (document.exitFullscreen) document.exitFullscreen(); }
+  setTimeout(()=>{ autoZoom(); updatePageIndicator(); }, 120);
+  if (btn) btn.textContent = (!isFs) ? '⤢ Sair' : '⛶ Tela Cheia';
+}
+
+document.addEventListener('fullscreenchange', () => {
+  const btn = $('btnFullscreen'); if (!btn) return;
+  btn.textContent = document.fullscreenElement ? '⤢ Sair' : '⛶ Tela Cheia';
+  setTimeout(()=>{ autoZoom(); updatePageIndicator(); }, 80);
+});
+
+function applyScale() {
+  const wrap = $('paperZoomWrap'); if (!wrap) return;
+  wrap.style.transform = `scale(${currentScale})`; wrap.style.transformOrigin = 'top center'; wrap.style.width = '794px';
+  const rawHeight = $('pdfViewer').offsetHeight; const scaledHeight = rawHeight * currentScale;
+  wrap.style.marginBottom = `${scaledHeight - rawHeight}px`;
+  const zl = $('zoomLabel');
+  if(zl) zl.textContent = `${Math.round(currentScale * 100)}%`;
+  updatePageIndicator();
+}
+
+function setZoom(scale) { currentScale = Math.max(0.4, Math.min(2.0, scale)); applyScale(); }
+function zoomStep(delta) { setZoom(currentScale + delta); }
+function autoZoom() {
+  const preview = $('canvasScroll');
+  if (!preview) return;
+  const isMobile = (window.visualViewport ? window.visualViewport.width : window.innerWidth) <= 1023;
+  const availWidth = Math.max(260, (preview.getBoundingClientRect().width || preview.clientWidth) - (isMobile ? 12 : 40));
+  currentScale = Math.min(1.5, availWidth / 794); applyScale();
+}
+window.addEventListener('resize', autoZoom);
+try { const __sc = $('canvasScroll'); if (__sc) __sc.addEventListener('scroll', () => { updatePageIndicator(); }, {passive:true}); } catch(e) {}
+
+loadData(); autoZoom(); renderThemeGrid();
+</script>
+
+<div id="kcPrintGuard" onclick="this.style.display='none'" style="display:none;position:fixed;inset:0;z-index:9999999;background:rgba(10,10,30,0.97);align-items:center;justify-content:center;flex-direction:column;text-align:center;font-family:Inter,sans-serif;color:#fff;user-select:none;pointer-events:all">
+  <div style="font-size:72px;margin-bottom:16px">🔒</div>
+  <div style="font-size:28px;font-weight:900;color:#ef4444;margin-bottom:12px">CAPTURA BLOQUEADA</div>
+  <div style="font-size:16px;color:#94a3b8;max-width:400px;line-height:1.6">Este conteúdo é protegido por direitos autorais.<br>Screenshots e capturas de tela não são permitidas.<br><br><small style="color:#475569">Clique para continuar</small></div>
+</div>
+
+</body></html>

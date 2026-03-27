@@ -1,0 +1,48 @@
+case 'webhook_mp':
+            $inputJSON = file_get_contents('php://input');
+            $data = json_decode($inputJSON, true) ?: [];
+            
+            $topic = $_GET['topic'] ?? $_GET['type'] ?? $data['action'] ?? $data['type'] ?? '';
+            $id = $_GET['id'] ?? $_GET['data']['id'] ?? $data['data']['id'] ?? '';
+            
+            if(strpos($topic, 'payment') !== false && $id) {
+                $token = getConfig('mp_access_token');
+                $ch = curl_init("https://api.mercadopago.com/v1/payments/$id");
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, ['Authorization: Bearer ' . $token]);
+                $payment = json_decode(curl_exec($ch), true);
+                curl_close($ch);
+                
+                if(isset($payment['status'])) {
+                    $status = $payment['status'];
+                    $liberar_pending = getConfig('mp_liberar_pending', '0');
+                    
+                    // Valida se foi pago 100% ou se o admin permite liberar boletos/pix pendentes
+                    if ($status === 'approved' || ($liberar_pending == '1' && ($status === 'pending' || $status === 'in_process'))) {
+                        
+                        $pedido_id_raw = $payment['external_reference'];
+                        $pedido_id = (int) str_replace("KNX_", "", $pedido_id_raw); // Remove prefixo de segurança
+                        
+                        $stmt = $pdo->prepare("SELECT * FROM pedidos WHERE id = ? AND status != 'aprovado'");
+                        $stmt->execute([$pedido_id]);
+                        $pedido = $stmt->fetch();
+                        
+                        if($pedido) {
+                            $pdo->prepare("UPDATE pedidos SET status = 'aprovado', gateway_id = ? WHERE id = ?")->execute([$id, $pedido_id]);
+                            $pdo->prepare("UPDATE usuarios SET creditos = creditos + ? WHERE email = ?")->execute([$pedido['creditos'], $pedido['email']]);
+                            
+                            $stmtU = $pdo->prepare("SELECT id FROM usuarios WHERE email = ?");
+                            $stmtU->execute([$pedido['email']]);
+                            $uid = $stmtU->fetchColumn();
+                            
+                            try {
+                                $pdo->prepare("INSERT INTO transacoes (usuario_id, tipo, quantidade, descricao, referencia, created_at) VALUES (?, 'compra', ?, ?, ?, NOW())")
+                                    ->execute([$uid, $pedido['creditos'], "Compra Webhook MP (Plano {$pedido['plano']})", $id]);
+                            } catch (Exception $e) {}
+                        }
+                    }
+                }
+            }
+            http_response_code(200);
+            echo "OK";
+            exit;
