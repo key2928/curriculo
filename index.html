@@ -636,9 +636,175 @@ input:focus, textarea:focus, select:focus {
   .roulette-wheel-icon { font-size: 60px; }
   .btn-spin-main { font-size: 15px; padding: 18px 24px; }
 }
+
+/* ══════════════════════════════════════════════════════════
+   ONBOARDING WIZARD — ESTILO KICKRESUME
+══════════════════════════════════════════════════════════ */
+#onboardingOverlay {
+  position: fixed; inset: 0; background: #fff; z-index: 99998;
+  overflow-y: auto; font-family: 'Inter', sans-serif;
+}
+.ob-step {
+  min-height: 100vh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; padding: 40px 24px 100px;
+}
+.ob-body { width: 100%; max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
+.ob-body-wide { max-width: 1120px; }
+.ob-title { font-size: 34px; font-weight: 800; color: #1e293b; text-align: center; margin-bottom: 14px; line-height: 1.2; }
+.ob-subtitle { font-size: 16px; color: #64748b; text-align: center; margin-bottom: 36px; line-height: 1.6; max-width: 640px; }
+/* Cards Step 1 */
+.ob-cards { display: flex; gap: 24px; justify-content: center; width: 100%; margin-bottom: 32px; flex-wrap: wrap; }
+.ob-card {
+  flex: 1; min-width: 255px; max-width: 320px;
+  border: 2px solid #e2e8f0; border-radius: 16px; padding: 42px 28px;
+  text-align: center; cursor: pointer; transition: border-color 0.2s, box-shadow 0.2s; background: #fff;
+}
+.ob-card:hover { border-color: #1B7A78; }
+.ob-card.ob-selected { border-color: #1B7A78; box-shadow: 0 0 0 1px #1B7A78; }
+.ob-card-icon { margin-bottom: 18px; display: flex; justify-content: center; }
+.ob-card h3 { font-size: 18px; font-weight: 700; color: #1e293b; margin-bottom: 12px; }
+.ob-card p { font-size: 13px; color: #64748b; line-height: 1.6; }
+/* Bottom navigation bar */
+.ob-nav-bar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: #fff; border-top: 1px solid #e2e8f0;
+  padding: 14px 40px; display: flex; align-items: center; justify-content: space-between; z-index: 99999;
+}
+.ob-btn-back {
+  background: none; border: 2px solid #1B7A78; color: #1B7A78;
+  padding: 11px 24px; border-radius: 50px; font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 8px;
+  font-family: 'Inter', sans-serif;
+}
+.ob-btn-back:hover { background: #e0f2f1; }
+.ob-btn-next, .ob-confirm-btn {
+  background: #1B7A78; color: #fff; border: none;
+  padding: 13px 34px; border-radius: 50px; font-size: 15px; font-weight: 700;
+  cursor: pointer; transition: 0.2s; font-family: 'Inter', sans-serif;
+}
+.ob-btn-next:hover, .ob-confirm-btn:hover {
+  background: #156661; transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(27,122,120,0.35);
+}
+.ob-btn-skip {
+  background: none; border: none; color: #1B7A78; font-size: 14px; font-weight: 600;
+  cursor: pointer; text-decoration: underline; padding: 12px; font-family: 'Inter', sans-serif;
+}
+.ob-btn-skip:hover { color: #156661; }
+/* Color palette filter */
+.ob-palette { display: flex; gap: 10px; margin-bottom: 28px; flex-wrap: wrap; justify-content: center; }
+.ob-color-swatch {
+  width: 36px; height: 36px; border-radius: 50%; cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s; border: 3px solid transparent; flex-shrink: 0;
+}
+.ob-color-swatch:hover { transform: scale(1.15); }
+.ob-color-swatch.ob-col-active { box-shadow: 0 0 0 3px #fff, 0 0 0 5px #1B7A78; }
+.ob-color-all { background: #f1f5f9; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; color: #64748b; }
+/* Template grid */
+.ob-tpl-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; width: 100%; margin-bottom: 24px; }
+.ob-tpl-card {
+  border: 2px solid #e2e8f0; border-radius: 10px; overflow: hidden;
+  cursor: pointer; transition: border-color 0.15s, transform 0.15s; background: #fff; position: relative;
+}
+.ob-tpl-card:hover { border-color: #1B7A78; transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,.08); }
+.ob-tpl-card.ob-tpl-selected { border-color: #1B7A78; box-shadow: 0 0 0 1px #1B7A78, 0 4px 14px rgba(27,122,120,.15); }
+.ob-tpl-thumb { width: 100%; aspect-ratio: 0.707; overflow: hidden; position: relative; background: #fff; }
+.ob-tpl-hover {
+  position: absolute; inset: 0; background: rgba(27,122,120,0.87);
+  display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s;
+}
+.ob-tpl-card:hover .ob-tpl-hover { opacity: 1; }
+.ob-tpl-hover span { color: #fff; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; padding: 0 8px; }
+.ob-badge-popular {
+  position: absolute; top: 6px; left: 6px; z-index: 2;
+  background: #f59e0b; color: #fff; font-size: 9px; font-weight: 900;
+  padding: 3px 7px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.ob-tpl-footer {
+  background: #f8f9fa; padding: 7px 10px; font-size: 10px; font-weight: 700;
+  color: #64748b; text-align: center; letter-spacing: 0.5px; border-top: 1px solid #e2e8f0;
+}
+@media (max-width: 1000px) { .ob-tpl-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 650px) {
+  .ob-title { font-size: 24px; } .ob-subtitle { font-size: 14px; }
+  .ob-cards { flex-direction: column; align-items: center; }
+  .ob-tpl-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .ob-nav-bar { padding: 12px 16px; }
+  .ob-btn-back, .ob-btn-next, .ob-confirm-btn { font-size: 13px; padding: 10px 18px; }
+}
 </style>
 </head>
 <body>
+
+<!-- ══════════════ ONBOARDING WIZARD ══════════════ -->
+<div id="onboardingOverlay" style="display:none;">
+
+  <!-- STEP 1: Como você quer começar? -->
+  <div id="obStep1" class="ob-step">
+    <div class="ob-body">
+      <h1 class="ob-title">Como você quer começar?</h1>
+      <div class="ob-cards">
+        <div class="ob-card ob-selected" id="obCardNew" onclick="obSelectCard(this)">
+          <div class="ob-card-icon">
+            <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="13" y="7" width="30" height="38" rx="4" stroke="#E87C6D" stroke-width="2.5" fill="none"/>
+              <line x1="19" y1="19" x2="37" y2="19" stroke="#E87C6D" stroke-width="2" stroke-linecap="round"/>
+              <line x1="19" y1="25" x2="37" y2="25" stroke="#E87C6D" stroke-width="2" stroke-linecap="round"/>
+              <line x1="19" y1="31" x2="30" y2="31" stroke="#E87C6D" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="41" cy="44" r="9" stroke="#E87C6D" stroke-width="2.5" fill="white"/>
+              <line x1="47.5" y1="50.5" x2="53.5" y2="56.5" stroke="#E87C6D" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h3>Criar um novo currículo</h3>
+          <p>Vamos ajudá-lo a criar um CV passo a passo.</p>
+        </div>
+        <div class="ob-card" id="obCardImport" onclick="obSelectCard(this)">
+          <div class="ob-card-icon">
+            <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M32 13 C22 13 15 20 15 27 C9 27 7 32 7 36 C7 43 12.5 46.5 18 46.5 L46 46.5 C51.5 46.5 57 43 57 36 C57 31 52.5 27 48.5 27 C47.5 20 42 13 32 13Z" stroke="#E87C6D" stroke-width="2.5" fill="none" stroke-linejoin="round"/>
+              <line x1="32" y1="30" x2="32" y2="56" stroke="#E87C6D" stroke-width="2.5" stroke-linecap="round"/>
+              <polyline points="25,38 32,30 39,38" stroke="#E87C6D" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h3>Eu já tenho um currículo</h3>
+          <p>Iremos reformatar o seu currículo e preencher suas informações para que você não perca tempo.</p>
+        </div>
+      </div>
+    </div>
+    <div class="ob-nav-bar">
+      <button class="ob-btn-back" onclick="closeOnboarding()" aria-label="Voltar para o início">← Voltar</button>
+      <button class="ob-btn-next" onclick="obGoStep(2)">Próximo</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: Como você quer que seja o seu currículo? -->
+  <div id="obStep2" class="ob-step" style="display:none;">
+    <div class="ob-body ob-body-wide">
+      <h1 class="ob-title">Como você quer que seja o seu currículo?</h1>
+      <p class="ob-subtitle">Clique para selecionar um modelo. Você sempre pode alterá-lo mais tarde.</p>
+      <div class="ob-palette" id="obPalette">
+        <div class="ob-color-swatch ob-color-all ob-col-active" data-group="all" onclick="obFilterColor(this,'all')" title="Todos os modelos">⊘</div>
+        <div class="ob-color-swatch" style="background:#64748b" data-group="gray" onclick="obFilterColor(this,'gray')" title="Cinza"></div>
+        <div class="ob-color-swatch" style="background:#dc2626" data-group="red" onclick="obFilterColor(this,'red')" title="Vermelho"></div>
+        <div class="ob-color-swatch" style="background:#d97706" data-group="orange" onclick="obFilterColor(this,'orange')" title="Laranja/Rosa"></div>
+        <div class="ob-color-swatch" style="background:#f59e0b" data-group="yellow" onclick="obFilterColor(this,'yellow')" title="Amarelo"></div>
+        <div class="ob-color-swatch" style="background:#059669" data-group="green" onclick="obFilterColor(this,'green')" title="Verde"></div>
+        <div class="ob-color-swatch" style="background:#0d9488" data-group="teal" onclick="obFilterColor(this,'teal')" title="Teal/Turquesa"></div>
+        <div class="ob-color-swatch" style="background:#2563eb" data-group="blue" onclick="obFilterColor(this,'blue')" title="Azul"></div>
+        <div class="ob-color-swatch" style="background:#1e293b" data-group="dark" onclick="obFilterColor(this,'dark')" title="Escuro"></div>
+      </div>
+      <div class="ob-tpl-grid" id="obTplGrid">
+        <!-- filled by JS -->
+      </div>
+    </div>
+    <div class="ob-nav-bar">
+      <button class="ob-btn-skip" onclick="closeOnboarding()">Ignorar por agora</button>
+      <button class="ob-confirm-btn" onclick="obApplyTemplate()">Escolher modelo</button>
+    </div>
+  </div>
+
+</div>
+<!-- ══ /ONBOARDING WIZARD ══ -->
 
 <div id="app-container">
 <div class="main-wrapper">
@@ -2756,7 +2922,218 @@ function autoZoom() {
 window.addEventListener('resize', autoZoom);
 try { const __sc = $('canvasScroll'); if (__sc) __sc.addEventListener('scroll', () => { updatePageIndicator(); }, {passive:true}); } catch(e) {}
 
-loadData(); autoZoom(); renderThemeGrid();
+// ════════════════════════════════════════════════════════════════
+// ONBOARDING WIZARD — ESTILO KICKRESUME
+// ════════════════════════════════════════════════════════════════
+
+let obStartMethod = 'new';
+let obSelectedTplIdx = 0;
+
+const OB_TEMPLATES = [
+  { name:'Slate Pro', popular:true, colorGroup:'dark', layout:'layout-side-left lay-12', style:'var-9', font:"'Montserrat', sans-serif", bg:'#1e293b', sec:'#0f172a', fontCol:'#f1f5f9', side:'#94a3b8', tType:'side-left', tAccent:'#6366f1', tBg:'#fff' },
+  { name:'Azul Clássico', popular:true, colorGroup:'blue', layout:'layout-classic lay-8', style:'var-1', font:"'Inter', sans-serif", bg:'#1e3a8a', sec:'#f8fafc', fontCol:'#0f172a', side:'#ffffff', tType:'classic', tAccent:'#1e3a8a', tBg:'#fff' },
+  { name:'Teal Geométrico', popular:true, colorGroup:'teal', layout:'layout-geo lay-13', style:'var-6', font:"'Montserrat', sans-serif", bg:'#0d9488', sec:'#f0fdfa', fontCol:'#134e4a', side:'#ffffff', tType:'geo', tAccent:'#0d9488', tBg:'#f0fdfa' },
+  { name:'Minimalista', popular:false, colorGroup:'gray', layout:'layout-minimal lay-26', style:'var-3', font:"'Playfair Display', serif", bg:'#1e293b', sec:'#f8fafc', fontCol:'#0f172a', side:'#ffffff', tType:'minimal', tAccent:'#1e293b', tBg:'#fff' },
+  { name:'Vermelho Exec.', popular:false, colorGroup:'red', layout:'layout-classic lay-8', style:'var-1', font:"'Montserrat', sans-serif", bg:'#dc2626', sec:'#fef2f2', fontCol:'#1e293b', side:'#ffffff', tType:'classic', tAccent:'#dc2626', tBg:'#fff' },
+  { name:'Artístico Pink', popular:false, colorGroup:'red', layout:'layout-artistic lay-22', style:'var-2', font:"'Poppins', sans-serif", bg:'#ec4899', sec:'#fdf2f8', fontCol:'#4c1d95', side:'#ffffff', tType:'artistic', tAccent:'#ec4899', tBg:'#fff' },
+  { name:'Navy Boxed', popular:false, colorGroup:'blue', layout:'layout-boxed lay-11', style:'var-5', font:"'Lato', sans-serif", bg:'#1e3a8a', sec:'#eff6ff', fontCol:'#0f172a', side:'#ffffff', tType:'boxed', tAccent:'#1e3a8a', tBg:'#fff' },
+  { name:'Dark Indigo', popular:false, colorGroup:'dark', layout:'layout-side-left lay-12', style:'var-9', font:"'Montserrat', sans-serif", bg:'#6366f1', sec:'#1e1b4b', fontCol:'#e0e7ff', side:'#e0e7ff', tType:'side-left', tAccent:'#6366f1', tBg:'#1e1b4b' },
+  { name:'Verde Esmeralda', popular:false, colorGroup:'green', layout:'layout-side-left lay-12', style:'var-1', font:"'Inter', sans-serif", bg:'#047857', sec:'#064e3b', fontCol:'#ecfdf5', side:'#ecfdf5', tType:'side-left', tAccent:'#047857', tBg:'#f0fdf4' },
+  { name:'Rose Elegante', popular:false, colorGroup:'orange', layout:'layout-minimal lay-26', style:'var-3', font:"'Playfair Display', serif", bg:'#be185d', sec:'#fdf2f8', fontCol:'#500724', side:'#ffffff', tType:'minimal', tAccent:'#be185d', tBg:'#fdf2f8' }
+];
+
+function obMakeThumb(tType, tAccent, tBg) {
+  const w1 = '#e2e8f0', w2 = '#f1f5f9';
+  switch(tType) {
+    case 'side-left': return `<div style="display:flex;height:100%;">
+      <div style="width:34%;background:${tAccent};padding:10px 7px;display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0;">
+        <div style="width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.22);border:2px solid rgba(255,255,255,.42);margin-bottom:5px;flex-shrink:0;"></div>
+        <div style="height:4px;background:rgba(255,255,255,.82);border-radius:2px;width:80%;"></div>
+        <div style="height:3px;background:rgba(255,255,255,.52);border-radius:1px;width:58%;margin-bottom:8px;"></div>
+        <div style="height:1px;background:rgba(255,255,255,.38);width:85%;margin-bottom:5px;"></div>
+        <div style="height:2px;background:rgba(255,255,255,.25);border-radius:1px;width:90%;"></div>
+        <div style="height:2px;background:rgba(255,255,255,.18);border-radius:1px;width:75%;margin-bottom:2px;"></div>
+        <div style="height:2px;background:rgba(255,255,255,.25);border-radius:1px;width:85%;margin-bottom:7px;"></div>
+        <div style="height:1px;background:rgba(255,255,255,.38);width:85%;margin-bottom:5px;"></div>
+        <div style="height:2px;background:rgba(255,255,255,.18);border-radius:1px;width:90%;"></div>
+        <div style="height:2px;background:rgba(255,255,255,.14);border-radius:1px;width:70%;"></div>
+      </div>
+      <div style="flex:1;background:${tBg};padding:10px 9px;">
+        <div style="height:5px;background:${w1};border-radius:2px;width:80%;margin-bottom:3px;"></div>
+        <div style="height:3px;background:${tAccent};border-radius:1px;width:55%;margin-bottom:9px;opacity:.65;"></div>
+        <div style="height:1px;background:${w1};width:100%;margin-bottom:7px;"></div>
+        <div style="height:2px;background:${w1};border-radius:1px;width:90%;margin-bottom:2px;"></div>
+        <div style="height:2px;background:${w1};border-radius:1px;width:75%;margin-bottom:2px;"></div>
+        <div style="height:2px;background:${w1};border-radius:1px;width:80%;margin-bottom:9px;"></div>
+        <div style="height:3px;background:${w2};border-radius:2px;width:50%;margin-bottom:5px;"></div>
+        <div style="height:2px;background:${w1};border-radius:1px;width:88%;margin-bottom:2px;"></div>
+        <div style="height:2px;background:${w1};border-radius:1px;width:65%;"></div>
+      </div>
+    </div>`;
+    case 'classic': return `<div style="background:${tBg};height:100%;">
+      <div style="background:${tAccent};padding:9px 10px;display:flex;align-items:center;gap:8px;">
+        <div style="width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.52);flex-shrink:0;"></div>
+        <div style="flex:1;">
+          <div style="height:5px;background:rgba(255,255,255,.92);border-radius:2px;width:75%;margin-bottom:3px;"></div>
+          <div style="height:3px;background:rgba(255,255,255,.62);border-radius:1px;width:52%;margin-bottom:3px;"></div>
+          <div style="height:2px;background:rgba(255,255,255,.42);border-radius:1px;width:88%;"></div>
+        </div>
+      </div>
+      <div style="padding:9px 10px;">
+        <div style="height:3px;background:${w1};border-radius:1px;width:40%;margin-bottom:5px;"></div>
+        <div style="height:2px;background:${w1};border-radius:1px;width:90%;margin-bottom:2px;"></div>
+        <div style="height:2px;background:${w1};border-radius:1px;width:75%;margin-bottom:2px;"></div>
+        <div style="height:2px;background:${w1};border-radius:1px;width:80%;margin-bottom:8px;"></div>
+        <div style="height:3px;background:${w2};border-radius:1px;width:45%;margin-bottom:5px;"></div>
+        <div style="height:2px;background:${w1};border-radius:1px;width:88%;margin-bottom:2px;"></div>
+        <div style="height:2px;background:${w1};border-radius:1px;width:65%;"></div>
+      </div>
+    </div>`;
+    case 'geo': return `<div style="background:${tBg};height:100%;">
+      <div style="background:${tAccent};clip-path:polygon(0 0,100% 0,100% 78%,0 100%);padding:10px 10px 26px;display:flex;align-items:flex-start;gap:8px;min-height:80px;">
+        <div style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.28);border:2px solid rgba(255,255,255,.55);flex-shrink:0;"></div>
+        <div style="padding-top:2px;">
+          <div style="height:5px;background:rgba(255,255,255,.9);border-radius:2px;width:80px;margin-bottom:3px;"></div>
+          <div style="height:3px;background:rgba(255,255,255,.62);border-radius:1px;width:58px;margin-bottom:3px;"></div>
+          <div style="height:2px;background:rgba(255,255,255,.45);border-radius:1px;width:100px;"></div>
+        </div>
+      </div>
+      <div style="padding:5px 10px 10px;">
+        <div style="height:3px;background:${tAccent};border-radius:1px;width:40%;margin-bottom:5px;opacity:.55;"></div>
+        <div style="height:2px;background:${w1};border-radius:1px;width:90%;margin-bottom:2px;"></div>
+        <div style="height:2px;background:${w1};border-radius:1px;width:75%;margin-bottom:2px;"></div>
+        <div style="height:2px;background:${w1};border-radius:1px;width:80%;margin-bottom:8px;"></div>
+        <div style="height:3px;background:${w2};border-radius:1px;width:45%;margin-bottom:5px;"></div>
+        <div style="height:2px;background:${w1};border-radius:1px;width:88%;margin-bottom:2px;"></div>
+        <div style="height:2px;background:${w1};border-radius:1px;width:62%;"></div>
+      </div>
+    </div>`;
+    case 'minimal': return `<div style="background:${tBg};height:100%;padding:14px 12px;text-align:center;">
+      <div style="height:5px;background:#1e293b;border-radius:2px;width:65%;margin:0 auto 4px;"></div>
+      <div style="height:3px;background:${tAccent};border-radius:1px;width:45%;margin:0 auto 3px;opacity:.8;"></div>
+      <div style="height:2px;background:#94a3b8;border-radius:1px;width:82%;margin:0 auto 10px;"></div>
+      <div style="height:2px;background:${tAccent};width:100%;margin-bottom:8px;opacity:.42;"></div>
+      <div style="height:3px;background:${w1};border-radius:1px;width:35%;margin:0 auto 5px;"></div>
+      <div style="height:2px;background:${w1};border-radius:1px;width:88%;margin:0 auto 2px;"></div>
+      <div style="height:2px;background:${w1};border-radius:1px;width:70%;margin:0 auto 8px;"></div>
+      <div style="height:3px;background:${w1};border-radius:1px;width:40%;margin:0 auto 5px;"></div>
+      <div style="height:2px;background:${w1};border-radius:1px;width:85%;margin:0 auto 2px;"></div>
+      <div style="height:2px;background:${w1};border-radius:1px;width:60%;margin:0 auto;"></div>
+    </div>`;
+    case 'artistic': return `<div style="display:flex;height:100%;background:${tBg};">
+      <div style="width:9px;background:${tAccent};flex-shrink:0;"></div>
+      <div style="flex:1;padding:10px 8px;">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:9px;">
+          <div style="font-size:28px;font-weight:900;color:${tAccent};line-height:1;opacity:.88;flex-shrink:0;">D</div>
+          <div>
+            <div style="height:4px;background:#1e293b;border-radius:2px;width:72px;margin-bottom:3px;"></div>
+            <div style="height:3px;background:${tAccent};border-radius:1px;width:50px;opacity:.68;"></div>
+          </div>
+        </div>
+        <div style="height:1px;background:${w1};width:100%;margin-bottom:7px;"></div>
+        <div style="height:3px;background:${w1};border-radius:1px;width:40%;margin-bottom:5px;"></div>
+        <div style="height:2px;background:${w1};border-radius:1px;width:90%;margin-bottom:2px;"></div>
+        <div style="height:2px;background:${w1};border-radius:1px;width:75%;margin-bottom:8px;"></div>
+        <div style="height:3px;background:${w2};border-radius:1px;width:45%;margin-bottom:5px;"></div>
+        <div style="height:2px;background:${w1};border-radius:1px;width:80%;margin-bottom:2px;"></div>
+        <div style="height:2px;background:${w1};border-radius:1px;width:55%;"></div>
+      </div>
+    </div>`;
+    case 'boxed': return `<div style="background:${tBg};height:100%;padding:7px;box-sizing:border-box;">
+      <div style="border:2px solid ${tAccent};border-radius:6px;height:calc(100% - 14px);overflow:hidden;box-sizing:border-box;">
+        <div style="background:${tAccent};padding:8px 10px;display:flex;align-items:center;gap:7px;">
+          <div style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.28);flex-shrink:0;border:2px solid rgba(255,255,255,.52);"></div>
+          <div>
+            <div style="height:4px;background:rgba(255,255,255,.9);border-radius:2px;width:65px;margin-bottom:2px;"></div>
+            <div style="height:3px;background:rgba(255,255,255,.6);border-radius:1px;width:45px;"></div>
+          </div>
+        </div>
+        <div style="padding:8px 10px;">
+          <div style="height:3px;background:${w1};border-radius:1px;width:40%;margin-bottom:5px;"></div>
+          <div style="height:2px;background:${w1};border-radius:1px;width:88%;margin-bottom:2px;"></div>
+          <div style="height:2px;background:${w1};border-radius:1px;width:70%;margin-bottom:8px;"></div>
+          <div style="height:3px;background:${w2};border-radius:1px;width:45%;margin-bottom:5px;"></div>
+          <div style="height:2px;background:${w1};border-radius:1px;width:80%;margin-bottom:2px;"></div>
+          <div style="height:2px;background:${w1};border-radius:1px;width:58%;"></div>
+        </div>
+      </div>
+    </div>`;
+    default: return '';
+  }
+}
+
+function obBuildTemplateGrid() {
+  const grid = $('obTplGrid'); if (!grid) return;
+  let html = '';
+  OB_TEMPLATES.forEach(function(t, i) {
+    const thumb = obMakeThumb(t.tType, t.tAccent, t.tBg);
+    html += '<div class="ob-tpl-card ' + (i===0?'ob-tpl-selected':'') + '" data-color-group="' + t.colorGroup + '" onclick="obSelectTemplate(this,' + i + ')">' +
+      (t.popular ? '<div class="ob-badge-popular">Mais popular</div>' : '') +
+      '<div class="ob-tpl-thumb">' + thumb + '<div class="ob-tpl-hover"><span>Visualizar modelo</span></div></div>' +
+      '<div class="ob-tpl-footer">PDF | WORD</div>' +
+      '</div>';
+  });
+  grid.innerHTML = html;
+}
+
+function obGoStep(step) {
+  $('obStep1').style.display = step === 1 ? 'flex' : 'none';
+  $('obStep2').style.display = step === 2 ? 'flex' : 'none';
+  if (step === 2) obBuildTemplateGrid();
+}
+
+function obSelectCard(el) {
+  document.querySelectorAll('.ob-card').forEach(function(c) { c.classList.remove('ob-selected'); });
+  el.classList.add('ob-selected');
+  obStartMethod = el.id === 'obCardNew' ? 'new' : 'import';
+}
+
+function obFilterColor(swatchEl, group) {
+  document.querySelectorAll('.ob-color-swatch').forEach(function(s) { s.classList.remove('ob-col-active'); });
+  swatchEl.classList.add('ob-col-active');
+  document.querySelectorAll('.ob-tpl-card').forEach(function(card) {
+    card.style.display = (group === 'all' || card.dataset.colorGroup === group) ? 'block' : 'none';
+  });
+}
+
+function obSelectTemplate(el, idx) {
+  document.querySelectorAll('.ob-tpl-card').forEach(function(c) { c.classList.remove('ob-tpl-selected'); });
+  el.classList.add('ob-tpl-selected');
+  obSelectedTplIdx = idx;
+}
+
+function obApplyTemplate() {
+  const t = OB_TEMPLATES[obSelectedTplIdx];
+  if (t) {
+    if ($('selLayout')) $('selLayout').value = t.layout;
+    if ($('selStyle')) $('selStyle').value = t.style;
+    if ($('selFontFamily')) $('selFontFamily').value = t.font;
+    if ($('inpColor')) $('inpColor').value = t.bg;
+    if ($('inpSecColor')) $('inpSecColor').value = t.sec;
+    if ($('inpFontColor')) $('inpFontColor').value = t.fontCol;
+    if ($('inpSidebarColor')) $('inpSidebarColor').value = t.side;
+    updateStyles(); saveData();
+  }
+  closeOnboarding();
+}
+
+function closeOnboarding() {
+  const ov = $('onboardingOverlay'); if (ov) ov.style.display = 'none';
+  if (obStartMethod === 'import') {
+    const up = $('uploadResumeFile'); if (up) setTimeout(function() { up.click(); }, 200); // small delay to allow overlay hide animation
+  }
+}
+
+function initOnboarding() {
+  const saved = localStorage.getItem('konexData_FINAL3');
+  let hasData = false;
+  if (saved) {
+    try { const d = JSON.parse(saved); if (d && d.nome && d.nome.trim().length > 1) hasData = true; } catch(e) {}
+  }
+  if (!hasData) { const ov = $('onboardingOverlay'); if (ov) ov.style.display = 'block'; }
+}
+
+loadData(); autoZoom(); renderThemeGrid(); initOnboarding();
 </script>
 
 <div id="kcPrintGuard" onclick="this.style.display='none'" style="display:none;position:fixed;inset:0;z-index:9999999;background:rgba(10,10,30,0.97);align-items:center;justify-content:center;flex-direction:column;text-align:center;font-family:Inter,sans-serif;color:#fff;user-select:none;pointer-events:all">
